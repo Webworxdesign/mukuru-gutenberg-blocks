@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "wwx/hoverbox",
+	"version": "0.1.0",
+	"title": "Hover Box", 
+	"category": "layout",
+	"icon": "button",
+	"description": "Hover box created with WP Interactivity API", 
+	"keywords": [
+		"hover",
+		"box",
+		"hover-box"
+	],
+	"textdomain": "webworx-hoverbox",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css"
+}

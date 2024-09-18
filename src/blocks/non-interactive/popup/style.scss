@@ -1,0 +1,158 @@
+/**
+ * #.# Styles
+ *
+ * CSS for both Frontend+Backend.
+ */
+ .wp-block-ww-modal-block, .ww-block-close-btn {
+    &.align-center {
+      text-align: center;
+    }
+  
+    &.align-left {
+      text-align: left;
+    }
+  
+    &.align-right {
+      text-align: right;
+    }
+  
+    .ww-btn {
+      display: inline-block;
+      vertical-align: top;
+      line-height: 1.5;
+      padding: 8px 20px;
+      margin: 4px 0;
+      border-radius: 3px;
+      background-color: rgba(0, 0, 0, 0.1);
+      cursor:pointer;
+    }
+  
+  }
+  
+  // bevause we move the overlay and wrap to the document wwy then
+  // we need to setup styles outside of the wp-block container
+  
+  .ww-block-popup-overlay,
+  .ww-block-popup-wrap {
+    position: fixed;
+    display: none;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+  
+  .ww-block-popup-overlay {
+    z-index: 10001;
+    height: 100%;
+    -webkit-transition: opacity 0.3s;
+    transition: opacity 0.3s;
+    opacity: 0;
+  
+    &.active {
+      opacity: 0.5;
+      backdrop-filter: blur(10px);
+    }
+  }
+  
+  .ww-block-popup-wrap {
+    position: fixed;
+    z-index: 10002;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    padding: 15px;
+    overflow-y: auto;
+  
+    &.active {
+      .ww-block-popup-closer {
+        opacity: 1;
+      }
+      opacity: 1;
+    }
+    .ww-block-popup-wrap-inner {
+      display: block;
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+    .ww-block-popup {
+          display: block;
+          width: 100%;
+          max-width: 1200px;
+          max-height: calc(100vh - 120px);
+          padding: 0px 5px 0 0;
+          position: relative;
+          top: 80px;
+          left: 50%;
+          transform: translate(-50%, 0);
+          margin-bottom: 180px;
+          overflow: hidden;
+          overflow-y: auto;
+          .ww-modal-content {
+              border-radius: 40px;
+              overflow: hidden;
+          }
+      .wp-block-embed {
+        &:only-child {
+          margin: 0;
+        }
+      }
+      a {
+        color: var(--teal);
+        &:hover {
+          color: var(--orange);
+        }
+      }
+    }
+    .ww-block-popup-closer {
+      position: fixed;
+      top: 5px;
+      right: 20px;
+      text-align: center;
+      font-weight: normal;
+      color: black;
+      -webkit-transition: opacity 0.3s;
+      transition: opacity 0.3s;
+      opacity: 0;
+      &:before {
+        content: '\00D7';
+        font-size: 48px;
+        line-height: 1;
+        color: #fff;
+        text-shadow: 0 0 05px rgba(0,0,0,0.9);
+      }
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  
+    button.ww-block-title-closer {
+      float: right;
+      line-height: 1;
+      padding: 6px;
+      margin: 0;
+      border: none;
+      outline: none;
+      &:hover{
+        background-color: transparent;
+        color: black;
+        border: none;
+        padding: 6px;
+      }
+      &:active {
+        background-color: transparent;
+        color: black;
+        border: none;
+      }
+      &:not(:hover):not(:active){
+        background-color: transparent;
+        color: black;
+        border: none;
+      }
+    }
+  
+  }
+  

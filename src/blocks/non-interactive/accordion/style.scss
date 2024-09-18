@@ -1,0 +1,24 @@
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.wp-block-wwx-hoverbox {
+    > .hoverbox-inner {
+        display: block;
+        position: relative;
+        padding: 40px 15px 30px;
+        background: #e9e9ea;
+        border-radius: 20px;
+        transition: background 0.3s ease-in-out;
+        text-decoration: none; 
+        margin-bottom: 25px; 
+        cursor: pointer; 
+        &:hover{
+            z-index: 1;
+            background: #fcdcd3;
+        }
+	}
+}

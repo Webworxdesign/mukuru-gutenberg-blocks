@@ -1,0 +1,14 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "wwx/mukuru-animations-controls",
+	"version": "0.1.0",
+	"title": "Mukuru Animation Controls", 
+	"category": "widgets",
+	"icon": "media-interactive",
+	"description": "Blocks animations controls", 
+	"textdomain": "mukuru-animations-controls",
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php",
+	"style": "file:./style-index.css"
+}

@@ -1,0 +1,29 @@
+/**
+ * The following styles get applied inside the editor only.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+ .wp-block-spacer {
+	display: none !important;
+	width: 100%;
+	clear: both;
+	margin: 0 !important; 
+	height: var(--mobile-small-height, var(--mobile-medium-height) var(--tablet-height, var(--desktop-height)));
+	&[role="document"] {
+		display: block !important;
+	}
+	
+	@media (min-width: 480px) {
+		height: var(--mobile-medium-height, var(--tablet-height, var(--desktop-height)));
+	}
+
+	@media (min-width: 767px) {
+		height: var(--tablet-height, var(--desktop-height));
+	}
+
+	@media (min-width: 1080px) {
+		height: var(--desktop-height);
+	}
+
+}

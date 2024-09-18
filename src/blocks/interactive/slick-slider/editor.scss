@@ -1,0 +1,89 @@
+/**
+ * The following styles get applied inside the editor only.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+.wp-block-wwx-slick-slider {
+  white-space: nowrap;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  .block-editor-block-list__block .block-editor-block-list__layout{
+    margin-left: 20px;
+    margin-right: 20px;
+    transition: all 0.5s;
+  }
+  > .block-editor-inner-blocks{
+    margin-bottom: 50px;
+    > .block-editor-block-list__layout {
+      display: flex; 
+      transition: all 0.5s;
+    }
+    .block-list-appender.wp-block {
+      list-style: none;
+      padding: 0;
+      position: absolute;
+      right: 0;
+      bottom: -50px;
+      z-index: 2;
+      min-width: 48px !important;
+      height: 48px;
+      flex-basis: unset !important;
+    }
+  }
+  .wp-block-wwx-slick-item {
+    display: block;
+    width: 100%;
+    border: 1px solid #ddd;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+  .wp-block-mukuru-blocks-slick-item .wp-block, 
+  .block-editor-block-list__layout .block-editor-block-list__block .block-editor-block-list__block-edit {
+    min-width: 100%;
+    display: block;
+    white-space: normal;
+  }
+  .editor-block-list__layout.block-editor-block-list__layout .wp-block.editor-block-list__block.block-editor-block-list__block[data-type="wwx/slick-item"] {
+    vertical-align: top;
+  }
+  .editor-block-list__layout.block-editor-block-list__layout .wp-block.editor-block-list__block.block-editor-block-list__block[data-type="wwx/slick-item"]:nth-last-child(2){
+    margin-right: 60%;
+  }
+  .block-editor-block-list__block.is-multi-selected > .block-editor-block-mover,
+  .block-editor-block-list__block > .block-editor-block-list__block-edit > .block-editor-block-mover {
+    top: 75%;
+    transform: rotate(-90deg);
+    left: 10px;
+  }
+  .wp-block-mukuru-blocks-slick-item.block-editor-block-list__block.is-multi-selected > .block-editor-block-mover, 
+  .wp-block-mukuru-blocks-slick-item .block-editor-block-list__block > .block-editor-block-list__block-edit > .block-editor-block-mover {
+    top: -15px;
+    transform: rotate(0);
+    left: -45px;
+  }
+}
+
+// .is-selected.wp-block-wwx-slick-slider{
+//   overflow-x: scroll;
+// }
+
+@for $i from 1 through 12 {
+  .slides-visible-#{$i}{
+    .block-editor-block-list__layout {
+      > .wp-block[data-type="wwx/slick-item"] {
+        flex-basis: calc(100%/#{$i}) !important;
+        max-width: calc(100%/#{$i}) !important;
+        min-width: calc(100%/#{$i}) !important;
+      }
+    }
+  }
+}
+
+@for $a from 1 through 20 {
+  .edit-offset-#{$a} > .block-editor-inner-blocks > .block-editor-block-list__layout {
+      transition: left 0.5s;
+      left: calc( 100% * -#{$a} + 100%);
+  }
+}

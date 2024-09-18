@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "wwx/slick-item",
+	"title": "Slick Slider Item",
+	"category": "widgets", 
+	"icon": "media-interactive",
+	"description": "An interactive slider item block with the Interactivity API", 
+	"parent": ["wwx/slick-slider"],
+	"textdomain": "wwx",
+	"supports": {
+		"interactivity": true
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php",
+	"viewScriptModule": "file:./view.js"
+}

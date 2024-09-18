@@ -1,0 +1,13 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json", 
+	"apiVersion": 3, 
+	"name": "wwx/list-block-extension", 
+	"version": "0.1.0", 
+	"title": "List Block Extension", 
+	"category": "widgets", 
+	"icon": "media-interactive", 
+	"description": "List block extended eith extra options", 
+	"textdomain": "list-block-extension", 
+	"editorScript": "file:./index.js", 
+	"style": "file:./style-index.css"
+}

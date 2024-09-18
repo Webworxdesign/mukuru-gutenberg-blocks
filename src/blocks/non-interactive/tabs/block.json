@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "wwx/tabs",
+	"version": "0.1.0",
+	"title": "Tabs",
+	"category": "layout",
+	"icon": "welcome-widgets-menus",
+	"description": "A Tabs block",
+	"textdomain": "tabs", 
+	"supports": {
+		"interactivity": true,
+		"align": ["full", "wide"]
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css", 
+	"viewScriptModule": "file:./view.js"
+}

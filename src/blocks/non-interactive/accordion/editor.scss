@@ -1,0 +1,13 @@
+.hoverbox-link-control {
+    .block-editor-link-control {
+        min-width: 100%;
+    }
+    input.block-editor-url-input__input {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
+    }
+    .block-editor-link-control__search-actions{
+        right: 5px;
+    }
+}

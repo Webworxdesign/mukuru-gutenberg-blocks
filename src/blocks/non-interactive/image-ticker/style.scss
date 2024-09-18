@@ -1,0 +1,54 @@
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+ .wp-block-wwx-image-ticker {
+    overflow: hidden;	
+	.ticker-track {
+		display: flex;
+  		flex-wrap: nowrap;
+		white-space: nowrap;
+		position: relative;
+		.ticker-track-list {
+			float: left;
+			white-space: nowrap;
+			flex-wrap: nowrap;
+			display: flex;	
+			animation-name: ticker;
+			animation-timing-function: linear;
+			animation-delay: 0s;
+			animation-iteration-count: infinite;
+			animation-direction: normal;
+			animation-fill-mode: none;
+			animation-play-state: running;
+		}
+		figure {
+			display: block;
+			float: left;
+			margin: 0;
+			padding: 0;
+			img {
+				max-width: unset;
+				height: unset; 
+				@media only screen and (max-width: 768px) {
+					height: 160px;
+					width: auto;
+				}
+			}
+		}
+	}
+	
+}
+@keyframes ticker {
+    0% {
+      transform: translateX(0)
+    }
+    100% {
+      transform: translateX(-100%)
+    }
+}
+
+

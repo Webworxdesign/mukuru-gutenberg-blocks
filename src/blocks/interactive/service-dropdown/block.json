@@ -1,0 +1,50 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "wwx/services-dropdown",
+	"version": "0.1.0",
+	"title": "Services Dropdown",
+	"category": "widgets",
+	"icon": "media-interactive",
+	"description": "An interactive block with the Interactivity API",
+	"example": {},
+	"supports": {
+		"interactivity": true
+	},
+	"attributes": {
+		"id": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownType": {
+			"type": "string",
+			"default": "contained"
+		},
+		"bookServiceLink": {
+			"type": "string",
+			"default": "#"
+		},
+		"applyForWorkLink": {
+			"type": "string",
+			"default": "#"
+		}, 
+		"dropdownPlaceholder": {
+			"type": "string",
+			"default": "Choose the service you need"
+		},
+		"dropdownBackground": {
+			"type": "string",
+			"default": "#f0f0f0"
+		},
+		"services": {
+			"type": "array",
+			"default": []
+		}
+	},
+	"textdomain": "services-dropdown",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php",
+	"viewScriptModule": "file:./view.js"
+}
