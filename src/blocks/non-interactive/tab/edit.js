@@ -1,45 +1,45 @@
-/**
- * BLOCK:  Tab
- *
- * Registering a basic block with Gutenberg.
- */
-
 import { __ } from '@wordpress/i18n';
 import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
-import { Component, Fragment } from '@wordpress/element';
+import { useState, useEffect, Fragment } from '@wordpress/element';
 
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
 const kttabUniqueIDs = [];
-/**
- * Build the spacer edit
- */
-class Tab extends Component {
-	componentDidMount() {
-		if ( ! this.props.attributes.uniqueID ) {
-			this.props.setAttributes( {
-				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
-			} );
-			kttabUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
-		} else if ( kttabUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
-			this.props.setAttributes( {
-				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
-			} );
-			kttabUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
-		} else {
-			kttabUniqueIDs.push( this.props.attributes.uniqueID );
-		}
-	}
-	render() {
-		const { attributes: { id, uniqueID, anchor } } = this.props;
-		return (
-			<Fragment>
-				<div id={`${ anchor ? anchor : 'wwx-inner-tab'+uniqueID}`} className={ `wwx-tab-inner-content wwx-inner-tab-${ id } wwx-inner-tab${ uniqueID }` } >
-					<InnerBlocks templateLock={ false } />
-				</div>
-			</Fragment>
-		);
-	}
-}
-export default ( Tab );
+
+const Tab = (props) => {
+    const { attributes, setAttributes, clientId } = props;
+    const { id, uniqueID, anchor } = attributes;
+
+    const [localUniqueID, setLocalUniqueID] = useState(uniqueID);
+
+    useEffect(() => {
+        if (!localUniqueID) {
+            const newUniqueID = '_' + clientId.substr(2, 9);
+            setAttributes({ uniqueID: newUniqueID });
+            setLocalUniqueID(newUniqueID);
+            kttabUniqueIDs.push(newUniqueID);
+        } else if (kttabUniqueIDs.includes(localUniqueID)) {
+            const newUniqueID = '_' + clientId.substr(2, 9);
+            setAttributes({ uniqueID: newUniqueID });
+            setLocalUniqueID(newUniqueID);
+            kttabUniqueIDs.push(newUniqueID);
+        } else {
+            kttabUniqueIDs.push(localUniqueID);
+        }
+    }, [localUniqueID, clientId, setAttributes]);
+
+	const blockProps = useBlockProps({
+		className: `wwx-tab-inner-content wwx-inner-tab-${id} wwx-inner-tab${localUniqueID}`,
+	});
+
+    return (
+        <Fragment>
+            <div id={`${anchor ? anchor : 'wwx-inner-tab' + localUniqueID}`} {...blockProps}>
+                <InnerBlocks templateLock={false} />
+            </div>
+        </Fragment>
+    );
+};
+
+export default Tab;

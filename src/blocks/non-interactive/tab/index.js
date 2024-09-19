@@ -47,10 +47,10 @@ registerBlockType( 'wwx/tab', {
 			type: 'string',
 			default: '',
 		},
-    anchor:{
-      type: 'string',
-      default: '',
-    }
+		anchor:{
+			type: 'string',
+			default: '',
+		}
 	},
 	supports: {
 		inserter: false,
@@ -63,8 +63,11 @@ registerBlockType( 'wwx/tab', {
 
 	save( { attributes } ) {
 		const { id, uniqueID } = attributes;
+		const blockProps = useBlockProps.save({
+			className: `wwx-tab-inner-content wwx-inner-tab-${ id } wwx-inner-tab${ uniqueID }`,
+		});
 		return (
-			<div className={ `wwx-tab-inner-content wwx-inner-tab-${ id } wwx-inner-tab${ uniqueID }` }>
+			<div { ...blockProps }>
 				<div className={ 'wwx-tab-inner-content-inner' } >
 					<InnerBlocks.Content />
 				</div>

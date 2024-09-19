@@ -66,6 +66,7 @@ addFilter( 'blocks.registerBlockType', 'sim/attribute/responsivespacer', addCont
  * Create HOC to add spacer control to inspector controls of block.
  */
 const withSpacerResponsiveContol = createHigherOrderComponent((BlockEdit) => {
+
     return (props) => {
         // Do nothing if it's another block than our defined ones.
         if (!enableControlOnBlocks.includes(props.name)) {
@@ -73,6 +74,8 @@ const withSpacerResponsiveContol = createHigherOrderComponent((BlockEdit) => {
                 <BlockEdit {...props} />
             );
         }
+
+        const blockProps = useBlockProps();
 
         const { height, responsiveLarge, responsiveMedium, responsiveSmall, enableLarge, enableMedium, enableSmall } = props.attributes;
 
@@ -84,11 +87,20 @@ const withSpacerResponsiveContol = createHigherOrderComponent((BlockEdit) => {
             '--mobile-small-height': responsiveSmall ? `${responsiveSmall}px` : '' 
         };
 
-		const blockProps = useBlockProps({ style: inlineStyles });
+        let newStyles = {...props.style};
+        newStyles = inlineStyles;
+        
+        
+        const newProps = {
+            ...props,
+            style: newStyles
+        }
 
         return (
             <Fragment>
-                <BlockEdit {...props} />
+                <div {...blockProps} style={newStyles} >
+                <BlockEdit {...newProps} />
+                </div>
                 <InspectorControls>
                     <PanelBody
                         title={__('Responsive Settings')}
@@ -165,7 +177,6 @@ const withSpacerResponsiveContol = createHigherOrderComponent((BlockEdit) => {
                         )}
                     </PanelBody>
                 </InspectorControls>
-                <div {...blockProps}></div>
             </Fragment>
         );
     };

@@ -9,7 +9,8 @@
 	display: block;
 	width: 100%;
 	clear: both;
-	margin: 0 !important; 
+	margin-top: 0 !important; 
+	margin-bottom: 0 !important;
 	height: var(--mobile-small-height, var(--mobile-medium-height) var(--tablet-height, var(--desktop-height)));
 	
 	@media (min-width: 480px) {

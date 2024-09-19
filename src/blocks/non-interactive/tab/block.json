@@ -6,9 +6,6 @@
 	"title": "Tab", 
 	"category": "layout",
 	"icon": "welcome-write-blog", 
-	"parent": [
-		"wwx/tabs"
-	],
 	"description": "Tab created with WP Interactivity API", 
 	"keywords": [
 		"tab"
