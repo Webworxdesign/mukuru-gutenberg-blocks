@@ -31,7 +31,7 @@ foreach ($inner_blocks as $inner_block) {
   <?php echo get_block_wrapper_attributes(); ?>
 	data-wp-interactive="image-ticker" 
   <?php echo wp_interactivity_data_wp_context( array( 'id' => $unique_id ) ); ?> > 
-    <div class="ticker-track">
+    <div class="ticker-track <?php echo $attributes['fadedEdges'] ? 'faded-edges' : ''; ?>">
       <?php echo '<div class="ticker-track-list" data-wp-init="callbacks.imageTickerInit">' . $inner_blocks_html . '</div>'; ?>
       <?php echo '<div class="ticker-track-list" data-wp-init="callbacks.imageTickerInit">' . $inner_blocks_html . '</div>'; ?>
     </div>

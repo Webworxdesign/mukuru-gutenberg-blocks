@@ -14,7 +14,11 @@
 		},
 		"pauseOnHover": { 
 			"type": "boolean",
-			"default": true
+			"default": true 
+		}, 
+		"fadedEdges": {
+			"type": "boolean",
+			"default": true 
 		}
 	}, 
 	"textdomain": "image-ticker", 

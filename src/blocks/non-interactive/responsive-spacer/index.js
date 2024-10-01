@@ -82,9 +82,9 @@ const withSpacerResponsiveContol = createHigherOrderComponent((BlockEdit) => {
         // Generate the inline styles
         const inlineStyles = {
             '--desktop-height': height ? `${height}` : '',
-            '--tablet-height': responsiveLarge ? `${responsiveLarge}px` : '',
-            '--mobile-medium-height': responsiveMedium ? `${responsiveMedium}px` : '',
-            '--mobile-small-height': responsiveSmall ? `${responsiveSmall}px` : '' 
+            '--tablet-height': responsiveLarge ? `${responsiveLarge}px` : `${height}`, 
+            '--mobile-medium-height': responsiveMedium ? `${responsiveMedium}px` : responsiveLarge ? `${responsiveLarge}px` : `${height}`, 
+            '--mobile-small-height': responsiveSmall ? `${responsiveSmall}px` : responsiveMedium ? `${responsiveMedium}px` : responsiveLarge ? `${responsiveLarge}px` : `${height}`
         };
 
         let newStyles = {...props.style};
@@ -203,10 +203,10 @@ const addExtraProps = ( saveElementProps, blockType, attributes ) => {
 	var propsObj = {};
 	const { height, responsiveLarge, responsiveMedium, responsiveSmall } = attributes;
 
-	propsObj['style'] = height ? '--desktop-height: ' + height + ';' : '';
-	propsObj['style'] += responsiveLarge ? '--tablet-height: ' + responsiveLarge + 'px;' : '';
-	propsObj['style'] += responsiveMedium ? '--mobile-medium-height: ' + responsiveMedium + 'px;' : '';
-	propsObj['style'] += responsiveSmall ? '--mobile-small-height: ' + responsiveSmall + 'px;' : '';
+    propsObj['style'] = '--desktop-height: ' + (height ? height + ';' : '');
+    propsObj['style'] += '--tablet-height: ' + (responsiveLarge ? responsiveLarge + 'px;' : height + ';');
+    propsObj['style'] += '--mobile-medium-height: ' + (responsiveMedium ? responsiveMedium + 'px;' : (responsiveLarge ? responsiveLarge + 'px;' : height + ';'));
+    propsObj['style'] += '--mobile-small-height: ' + (responsiveSmall ? responsiveSmall + 'px;' : (responsiveMedium ? responsiveMedium + 'px;' : (responsiveLarge ? responsiveLarge + 'px;' : height + ';')));
 
 	assign( saveElementProps, propsObj );
 

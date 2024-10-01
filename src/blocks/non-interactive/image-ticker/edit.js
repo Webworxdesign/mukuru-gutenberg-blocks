@@ -7,7 +7,7 @@ import { TextControl, ToggleControl, PanelBody } from '@wordpress/components';
 export default function Edit({ attributes, setAttributes }) {
 	const blockProps = useBlockProps();
 
-	const { tickerSpeed, pauseOnHover } = attributes;
+	const { tickerSpeed, pauseOnHover, fadedEdges } = attributes;
 
 	const TEMPLATE = [
 		['core/image', { className: 'image-ticker__image skip-lazy' }],
@@ -36,6 +36,12 @@ export default function Edit({ attributes, setAttributes }) {
 								label="Pause on Hover" 
 								checked={pauseOnHover} 
 								onChange={(v) => setAttributes({ pauseOnHover: v })}
+							/>
+							
+							<ToggleControl 
+								label="Faded Edges"  
+								checked={fadedEdges} 
+								onChange={(v) => setAttributes({ fadedEdges: v })} 
 							/>
 
 						</Fragment>

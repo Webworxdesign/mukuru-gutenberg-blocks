@@ -1,0 +1,83 @@
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+ .wp-block-wwx-image-tooltips {
+	.image-tooltip-actions {
+		display: flex;
+		position: absolute;
+		top: -45px;
+	}
+	.pulsing-tooltip-wrapper {
+	   position: relative;
+	   .pulsing-tooltip {
+		   position: absolute;
+		   z-index: 99;
+		   .tooltip-icon { 
+				display: block;
+			   width: 20px;
+			   height: 20px;
+			   background-color: #f05423;
+			   border-radius: 50%;
+			   line-height: 0;
+			   box-shadow: 0px 0px 1px 1px #0000001a;
+			   animation: pulse-animation 2s infinite;
+		   }
+		   .tooltip {
+			   display: block;
+			   position: absolute;
+			   top: 0;
+			   left: 0;
+			   background: #EF4E22;
+			   color: #ffffff;
+			   padding: 10px 10px 15px;
+			   border-radius: 12px;
+			   max-width: 250px; 
+			   width: max-content;
+			   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			   z-index: 100;
+			   font-size: 12px;
+			   line-height: 1.5;
+			   transform: translateY(calc(-100% - 10px));
+			   opacity: 0;
+			   pointer-events: none;
+			   transition: all 0.3s ease-in-out;
+			   &::before {
+				   content: '';
+				   position: absolute;
+				   top: 100%;
+				   left: 15px;
+				   width: 0;
+				   height: 0;
+				   border: 5px solid transparent;
+				   border-top-color: #EF4E22;
+				   transform: translateX(-50%);
+			   }
+			   &.tooltip-right {
+				   &::before {
+					   left: auto;
+					   right: 15px;
+				   }
+			   }
+		   }
+		   &:hover, &:focus {
+			   .tooltip {
+				   pointer-events: all;
+				   opacity: 1;
+			   }
+		   }
+	   }
+   }
+ }
+
+@keyframes pulse-animation {
+    0% {
+      box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.2);
+    }
+    100% {
+      box-shadow: 0 0 0 20px rgba(0, 0, 0, 0);
+    }
+}
