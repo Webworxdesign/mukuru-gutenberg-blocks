@@ -15,6 +15,7 @@ $unique_id = wp_unique_id( 'p-' );
 
 $wrapper_attributes = get_block_wrapper_attributes();
 
+$style = $attributes['style'];
 $tooltipsImage = $attributes['tooltipsImage'];
 $tooltips = $attributes['tooltips'];
 
@@ -24,7 +25,7 @@ $tooltips = $attributes['tooltips'];
     <?php echo $wrapper_attributes; ?>
     data-wp-interactive="image-tooltips" >
 
-    <div class="wp-block-group pulsing-tooltip-wrapper">
+    <div class="wp-block-group pulsing-tooltip-wrapper <?php echo $style === 'sidebar' ? 'has-sidebar' : ''; ?>">
         <div class="wp-block-group__inner-container is-layout-constrained wp-block-group-is-layout-constrained">
         
             <?php if ($tooltipsImage) : ?>
@@ -37,7 +38,7 @@ $tooltips = $attributes['tooltips'];
                 </div>
             <?php endif; ?>
 
-            <?php if ($tooltips) : ?>
+            <?php if ($tooltips && $style === 'default') : ?>
                 <?php foreach ($tooltips as $tooltip) : ?>
                     <?php 
                     $topPosition = $tooltip['topPosition'];
@@ -51,7 +52,17 @@ $tooltips = $attributes['tooltips'];
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>
-            
+
+            <?php if ($tooltips && $style === 'sidebar' ) : ?>
+                <div class="sidebar-tooltip">
+                    <?php foreach ($tooltips as $tooltip) : ?>
+                        <div class="tooltip-sidebar__item">
+                            <p class="tooltip"><?php echo esc_html($tooltip['text']); ?></p>
+                        </div>
+                        
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>            
         </div>
     </div>
     

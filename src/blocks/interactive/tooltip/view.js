@@ -5,12 +5,12 @@ store( 'image-tooltips', {
 		toggleEnter: () => {
 			const context = getContext();
 			const tooltipEle = getElement( context );
-			tooltipEle.ref.parentElement.querySelector('.tooltip').classList.add('active');
+			tooltipEle.ref.querySelector('.tooltip').classList.add('active');
 		},
 		toggleLeave: () => {
 			const context = getContext();
 			const tooltipEle = getElement( context );
-			tooltipEle.ref.parentElement.querySelector('.tooltip').classList.remove('active');
+			tooltipEle.ref.querySelector('.tooltip').classList.remove('active');
 		}
 	},
 } );
