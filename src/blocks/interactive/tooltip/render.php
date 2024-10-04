@@ -43,7 +43,7 @@ $tooltips = $attributes['tooltips'];
                     $topPosition = $tooltip['topPosition'];
                     $leftPosition = $tooltip['leftPosition'];
                     ?>
-                    <div class="wp-block-group pulsing-tooltip" style="<?php echo $topPosition ? 'top: ' . $topPosition . ';' : ''; ?><?php echo $leftPosition ? 'left: ' . $leftPosition . ';' : ''; ?>">
+                    <div class="wp-block-group pulsing-tooltip" data-wp-on--mouseenter="actions.toggleEnter" data-wp-on--mouseleave="actions.toggleLeave" style="<?php echo $topPosition ? 'top: ' . $topPosition . ';' : ''; ?><?php echo $leftPosition ? 'left: ' . $leftPosition . ';' : ''; ?>">
                         <div class="wp-block-group__inner-container is-layout-constrained wp-block-group-is-layout-constrained">
                             <div class="tooltip-icon"></div>
                             <p class="tooltip"><?php echo esc_html($tooltip['text']); ?></p>

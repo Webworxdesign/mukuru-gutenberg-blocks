@@ -11,10 +11,9 @@ import { __ } from '@wordpress/i18n';
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { MediaUpload, MediaUploadCheck } from '@wordpress/editor';
+import { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import { Fragment } from '@wordpress/element';
-import { PanelBody, TextControl, Flex, FlexItem, FormFileUpload } from '@wordpress/components';
+import { SelectControl, PanelBody, TextControl, Flex, FlexItem } from '@wordpress/components';
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -29,7 +28,7 @@ import { PanelBody, TextControl, Flex, FlexItem, FormFileUpload } from '@wordpre
  * @return {Element} Element to render.
  */
 export default function Edit({ attributes, setAttributes }) {
-    const { tooltipsImage, tooltips } = attributes;
+    const { style, tooltipsImage, tooltips } = attributes;
 
     // Add class to blockProps 
     const blockProps = useBlockProps();
@@ -43,12 +42,22 @@ export default function Edit({ attributes, setAttributes }) {
                     <PanelBody
                         title={__('Image Tooltips', 'mukuru-gutenberg-blocks')}
                         initialOpen={false}
-                    >
+                        >
                         <Fragment>
+                            <SelectControl 
+                                label={__('Style', 'mukuru-gutenberg-blocks')} 
+                                value={style} 
+                                options={[
+                                    { label: __('Default', 'mukuru-gutenberg-blocks'), value: 'default' },
+                                    { label: __('Sidebar', 'mukuru-gutenberg-blocks'), value: 'sidebar' },
+                                ]}
+                                onChange={(style) => setAttributes({ style })}
+                                />
+                                
                             {/* Tooltips with descriptions and positions top and left */}
                             {tooltips.map((tooltip, index) => (
                                 <div key={index}>
-									<h5>{__('Tooltip', 'mukuru-gutenberg-blocks')} {index + 1}</h5>
+                                    <h5>{__('Tooltip', 'mukuru-gutenberg-blocks')} {index + 1}</h5>
                                     <TextControl
                                         label={__('Tooltip', 'mukuru-gutenberg-blocks')}
                                         value={tooltip.text}
@@ -57,8 +66,9 @@ export default function Edit({ attributes, setAttributes }) {
                                             newTooltips[index].text = text;
                                             setAttributes({ tooltips: newTooltips });
                                         }} 
-										className='mb-0'
+                                        className='mb-0'
                                     />
+                                    
                                     <Flex>
                                         <FlexItem>
                                             <TextControl
@@ -83,19 +93,19 @@ export default function Edit({ attributes, setAttributes }) {
                                             />
                                         </FlexItem>
                                     </Flex>
-									{/* Add remove tooltip button */}
-									<button
-										className="button"
-										onClick={() => {
-											const newTooltips = [...tooltips];
-											newTooltips.splice(index, 1);
-											setAttributes({ tooltips: newTooltips });
-										}}
-									> 
-										{__('Remove Tooltip', 'mukuru-gutenberg-blocks')}
-									</button>
+                                    {/* Add remove tooltip button */}
+                                    <button
+                                        className="button"
+                                        onClick={() => {
+                                            const newTooltips = [...tooltips];
+                                            newTooltips.splice(index, 1);
+                                            setAttributes({ tooltips: newTooltips });
+                                        }}
+                                    > 
+                                        {__('Remove Tooltip', 'mukuru-gutenberg-blocks')}
+                                    </button>
                                     <br />
-									{ index !== tooltips.length - 1 && <hr /> }
+                                    { index !== tooltips.length - 1 && <hr /> }
                                 </div>
                             ))}
                             <br />
@@ -117,13 +127,14 @@ export default function Edit({ attributes, setAttributes }) {
                             >
                                 {__('Add Tooltip', 'mukuru-gutenberg-blocks')}
                             </button>
+                            
                         </Fragment>
                     </PanelBody>
                 </InspectorControls>
             </Fragment>
 
 			<h4>Image Tooltips</h4>
-            <div className="pulsing-tooltip-wrapper">
+            <div className={`pulsing-tooltip-wrapper ${style === 'sidebar' ? 'has-sidebar' : ''}`}>
 
 				<div className="tooltip-image">
                     <MediaUploadCheck>
@@ -157,10 +168,23 @@ export default function Edit({ attributes, setAttributes }) {
                             <div className="wp-block-safe-svg-svg-icon safe-svg-cover" style={{ textAlign: 'left' }}>
                                 <div className="tooltip-icon"></div>
                             </div>
-                            <p className="tooltip">{tooltip.text}</p>
+                            { style === 'default' && <p className="tooltip">{tooltip.text}</p> }
                         </div>
                     </div>
                 ))}
+
+                { /* Sidebar tooltips */ }
+                { style === 'sidebar' && (
+                    <div className="sidebar-tooltip">
+                        {tooltips.map((tooltip, index) => (
+                            <div key={index} className="sidebar-tooltip-item">
+                                <div className="wp-block-group__inner-container is-layout-constrained wp-block-group-is-layout-constrained">
+                                    <p className="tooltip">{tooltip.text}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -12,6 +12,10 @@
 		"interactivity": true
 	},
 	"attributes": {  
+		"style": {
+			"type": "string", 
+			"default": "default"
+		},
         "tooltipsImage": {
             "type": "string",
             "default": ""

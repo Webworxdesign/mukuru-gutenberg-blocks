@@ -1,42 +1,16 @@
-import { getElement, store, getContext, useState, useEffect } from '@wordpress/interactivity';
+import { getElement, store, getContext } from '@wordpress/interactivity';
 
-const useEleHeight = () => {
-	const [ EleHeight, setEleHeight ] = useState( '' );
-	useEffect( () => {
-		const { ref } = getElement();
-		setEleHeight( ref.scrollHeight );
-	}, []);
-	return EleHeight;
-};
-
-
-store( 'services-dropdown', {
+store( 'image-tooltips', {
 	actions: {
-		toggle: () => {
+		toggleEnter: () => {
 			const context = getContext();
-			context.isOpen = ! context.isOpen;
+			const tooltipEle = getElement( context );
+			tooltipEle.ref.parentElement.querySelector('.tooltip').classList.add('active');
 		},
-	},
-	callbacks: {
-		logIsOpen: () => {
-			const { isOpen } = getContext();
-		},
-		serviceList: () => { 
+		toggleLeave: () => {
 			const context = getContext();
-			const isOpen = context.isOpen; // Ensure `isOpen` is retrieved correctly
-			const isEleHeight = useEleHeight();
-
-			if (isOpen) {
-				context.dropDownHeight = `${isEleHeight}px`; // Ensure height is set as a string with 'px'
-			} else {
-				context.dropDownHeight = '0px';
-			}
-		},
-		logClick(event) {
-			if ( !event.target.closest('.wp-block-wwx-services-dropdown') ) {
-				const context = getContext();
-				context.isOpen = false;
-			}
-        },
+			const tooltipEle = getElement( context );
+			tooltipEle.ref.parentElement.querySelector('.tooltip').classList.remove('active');
+		}
 	},
 } );

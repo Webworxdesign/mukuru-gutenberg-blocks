@@ -7,5 +7,28 @@
 .wp-block-wwx-image-tooltips {
 	.pulsing-tooltip-wrapper {
 		margin-top: 50px;
-	}
+		position: relative;
+		&.has-sidebar { 
+			.sidebar-tooltip {
+				.sidebar-tooltip-item {
+					&:first-child {
+						.tooltip {
+							background-color: #EFCFC6; 
+							&::before {
+								content: ""; 
+								display: block;
+								width: 70px;
+								height: 4px;
+								background-color: #EF4E22;
+								position: absolute;
+								top: 50%;
+								left: -60px;
+								transform: translateY(-50%);
+							}
+						}
+					}
+				}
+			}
+		 }
+	 }
 }
