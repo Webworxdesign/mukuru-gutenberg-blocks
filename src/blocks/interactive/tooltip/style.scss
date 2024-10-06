@@ -71,22 +71,26 @@
 	   	}
 		&.has-sidebar { 
 			display: flex;
+  			width: calc(100% - 260px);
 			.tooltip-image {
-				width: calc(100% - 260px);
-				padding-right: 40px;
+				width: 100%;
 			}
 			.sidebar-tooltip {
 				display: block;
 				width: 100%;
-				max-width: 260px;
+				max-width: 240px;
 				padding-top: 40px;
+				position: absolute;
+				right: -260px;
 				.tooltip {
 					display: block;
 					border-radius: 17px;
 					padding: 20px 28px 23px; 
 					position: relative;
+					transition: all 0.3s ease-in-out;
 					&.active {
 						background-color: #EFCFC6; 
+						color: #373a36;
 						&::before {
 							content: ""; 
 							display: block;
