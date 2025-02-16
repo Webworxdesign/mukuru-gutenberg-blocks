@@ -1,0 +1,380 @@
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.wp-block-wwx-checkrates {
+	.calculator-wrapper {
+		display: flex;
+		.charge-message, .payout-message {
+			font-size: 11px;
+			font-weight: 300;
+			margin-top: 3px;
+			line-height: 19px;
+		}
+		.calculate-results {
+			font-size: 14px;
+			margin: 15px 0 0;
+			line-height: 1.4;
+			text-align: center;
+			div:not(.uk-table-wrapper) {
+				p:not(.conversion) {
+					font-weight: 300;
+					font-size: 11px;
+					margin-bottom: 15px;
+				}
+			}
+			.conversion {
+				margin: 5px 0 15px;
+				font-size: 16px;            
+			}
+			.exchange-rate {
+				border: 1px solid var(--orange);
+				border-radius: 4em;
+				padding: 5px 18px;
+				width: max-content;
+				margin: 0 auto;
+				min-height: 32px;
+				strong {
+					line-height: 20px;
+				}
+				svg {
+					margin: 0 8px -5px;
+				}
+			}
+			.usp-message {
+				margin-top: 8px;
+			}
+			.uk-table-wrapper {
+				strong p:first-of-type {
+					border-bottom: 1px solid var(--white);
+					margin-bottom: 6px;
+					padding-bottom: 8px;
+				}
+				> p, strong p {
+					display: flex;
+					justify-content: space-between;
+					font-size: 14px;
+					margin-bottom: 8px;
+				}
+				.payout-amount-message {
+					justify-content: center;
+				}
+			}
+		}
+		input[type="number"] {
+			padding: 10px 22px;
+		}
+		.mukuru-calculator {    
+			color: var(--white);
+			background-color: var(--charcoal);
+			font-size: 14px;
+			max-width: 350px;
+			padding: 35px 2em 15px;
+			position: relative;
+			border-radius: 40px;
+			width: 100%;
+			.calculator-header {
+				text-align: center;
+				h3 {
+					color: var(--white);
+					font-size: 26px;
+					line-height: 26px;
+					margin-bottom: 10px;
+				}
+				.calculator-icon {
+					width: 55px;
+					height: 55px;
+					position: absolute;
+					top: -29px;
+					background-color: var(--white);
+					border-radius: 50%;
+					left: 50%;
+					transform: translateX(-50%);
+					display: flex;
+					justify-content: center;
+					align-items: center;
+				}
+			}
+			.inputs-wrapper{
+				position: relative;
+			}
+			.currency_dropdown{
+				opacity: 0;
+				visibility: hidden;
+				transition: all 0.3s ease-in-out;
+				position: absolute;
+				top: 100%;
+				z-index: 1;
+				padding: 0 20px 0;
+				box-shadow: 0 2.6753px 9.36354px rgba(0,0,0,.25);
+				max-height: 0;
+				height: auto;
+				background-color: var(--white);
+				border-radius: 0 0 20px 20px;
+				margin: 0px auto;
+				width: calc(100% - 30px);
+				right: 15px;
+				overflow-y: auto;
+				.currency__option{
+					font-weight: 400;
+					font-size: 14px;
+					display: flex;
+					align-content: center;
+					line-height: 20.5px;
+					margin-bottom: 10px;
+					color: var(--charcoal);
+					cursor: pointer;
+					.flag {                    
+						&.select {
+							margin-right: 10px;
+						}
+					}
+				}
+			}
+			.country_search{
+				transition: all 0.3s ease-in-out;
+				position: absolute;
+				top: 0;
+				right: 0;
+				width: 100%;
+				height: 100%;
+				.dropdown-arrow{
+					position: absolute;
+					top: 50%;
+					right: 15px;
+					transform: translateY(-50%);
+					height: 16px;
+					width: 13px;
+					svg {
+						fill: var(--white);
+						height: 16px;
+						width: 13px;
+					}
+				}
+			}
+			.mukuru-calculator__currency {
+				margin: 10px 0;
+				.currency-options-wrapper {
+					position: relative;
+					.selected-out-option {
+						margin: 0;
+						border: 0;
+						background: var(--charcoal-light);
+						font-size: 14px;
+						height: 45px;
+						border-radius: 2em;                    
+						display: flex;
+						justify-content: space-between;
+						align-items: center;
+						cursor: pointer;
+						.dropdown-arrow {
+							height: 29px;
+							width: auto;
+							margin-left: 0;
+							position: absolute;
+							right: 20px;
+							icon {
+								align-items: center;
+								height: 100%;
+								svg {
+									height: 18px;
+									width: 13px;
+								}
+							}
+						}
+						> li {
+							width: 100%;
+							z-index: 1000;
+							padding: 10px 22px;
+						}
+					}
+					li {
+						list-style: none;
+					}
+					.currency-out-options {
+						opacity: 0;
+						visibility: hidden;
+						transition: all .3s ease-in-out;
+						position: absolute;
+						width: calc(100% - 30px);
+						height: auto;
+						margin: 0 auto;
+						z-index: 1;
+						padding: 0 20px;
+						box-shadow: 0 2.6753px 9.36354px rgba(0,0,0,.25);
+						max-height: 0;
+						background-color: var(--white);
+						border-radius: 0 0 20px 20px;
+						top: 100%;
+						left: 15px;
+						overflow-y: auto;
+						li {
+							font-weight: 400;
+							font-size: 14px;
+							display: flex;
+							align-content: center;
+							line-height: 20.5px;
+							margin-bottom: 10px;
+							color: var(--charcoal);
+							cursor: pointer;
+						}
+						
+					}
+				}
+				&.active {
+					.currency-out-options {
+						opacity: 1;
+						visibility: visible;
+						padding: 25px 20px 15px;
+						max-height: 250px;
+					}
+				}
+			}
+			.select_country{
+				&.searching{
+					input{
+						border-radius: 20px;
+					}
+					.currency_dropdown{
+						opacity: 1;
+						visibility: visible;
+						padding: 25px 20px 15px;
+						max-height: 250px;
+						z-index: 1000000;
+					}
+				}
+			}
+			.selected_currency{
+				position: absolute;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				top: 0;
+				right: 0;
+				width: 137px;
+				height: 100%;
+				cursor: pointer;
+				svg {
+					fill: #ffffff;
+				}
+				.calculator-pipe { 
+					height: 25px;
+					background-color: var(--white);
+					width: 1px;
+					margin: 0 4px;
+				}
+				.text {
+					font-weight: 700;
+				}
+				.dropdown-arrow{
+					height: 29px;
+					width: auto;
+					margin-right: 19px;
+					margin-left: 0;
+					icon {
+						align-items: center;
+						height: 100%;
+						svg {
+							height: 18px;
+							width: 13px;
+							fill: var(--white);
+						}
+					}            
+				}
+			}
+			icon  {
+				display: flex;
+			}
+			.flag{
+				width: 25px;
+				height: 25px;
+				display: block;        
+				background-repeat: no-repeat;
+				background-size: contain;
+				border-radius: 50%;
+				overflow: hidden;
+			}
+			input{
+				border:0;
+				color: var(--white);
+				background: var(--charcoal-light);
+				font-size: 14px;
+				height: 45px;
+				&::placeholder {
+					opacity: 1;
+					font-weight: 700;
+				}
+			}
+			.mukuru-calculator__switch{
+				display: block;
+				height: 40px;
+				width: 40px;
+				margin: 9px auto -18px;
+				background-color: #66686a;
+				border-radius: 50%;
+				position: relative;
+				.lds-ring {
+					top: -8px;
+					width: 100%;
+					height: 100%;
+					left: 12px;
+					div {
+						width: 100%;
+						height: 100%;
+						border: 5px solid var(--orange);
+						border-color: var(--orange) transparent transparent;
+					}
+				}
+			}
+			.mukuru-calculator__label {
+				font-size: 14px;
+				line-height: 1.3;
+				display: block;
+				margin-bottom: 10px;
+			}
+			.wp-block-button {
+				margin-top: 13px;
+				&.is-style-big-white-outline-button {
+					width: 100%;
+					a {
+						width: 100%;
+					}
+				}
+			}
+			
+		}
+		@media only screen and (min-width: 768px) {
+			justify-content: flex-end !important;
+		}
+	}
+
+	@media only screen and (max-width:768px) {
+		.home-banner {
+			.calculator-wrapper {
+				justify-content: center!important;
+			}
+		}
+		
+	}
+
+	@media only screen and (max-width: 400px) {
+		.mukuru-calculator {
+			padding: 60px 1.3em 45px;
+			.selected_currency {
+				width: 117px;
+				.calculator-pipe {
+					height: 20px;
+					margin: 0 0px;
+				}
+			}
+		}     
+	}
+	@media only screen and (max-width: 400px) {
+		.calculator-wrapper .mukuru-calculator {
+			border-radius: 30px;
+		}
+	}
+}

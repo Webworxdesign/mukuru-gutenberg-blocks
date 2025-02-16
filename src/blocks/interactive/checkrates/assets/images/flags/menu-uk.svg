@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="35px" height="35px" viewBox="0 0 35 35" enable-background="new 0 0 35 35" xml:space="preserve">
+<g id="All_Flag_1_">
+	<g>
+		<defs>
+			<circle id="SVGID_1_" cx="17.5" cy="17.538" r="17.515"/>
+		</defs>
+		<use xlink:href="#SVGID_1_"  overflow="visible" fill="#FFFFFF"/>
+		<clipPath id="SVGID_2_">
+			<use xlink:href="#SVGID_1_"  overflow="visible"/>
+		</clipPath>
+		<g id="Shaps_1_" clip-path="url(#SVGID_2_)">
+			<g>
+				<g>
+					<polygon fill="#012169" points="-2.234,-1.361 13.339,12.067 13.339,-1.361 					"/>
+					<polyline fill="#C8102E" points="-8.147,-1.361 9.022,13.376 5.133,13.376 -8.147,2.002 					"/>
+					<polyline fill="#012169" points="-8.147,3.695 3.159,13.376 -8.147,13.376 					"/>
+				</g>
+				<g>
+					<polygon fill="#012169" points="37.233,-1.361 21.66,12.067 21.66,-1.361 					"/>
+					<polyline fill="#012169" points="43.146,3.695 31.84,13.376 43.146,13.376 					"/>
+					<polyline fill="#C8102E" points="22.051,13.376 39.238,-1.361 43.146,-1.361 25.981,13.376 					"/>
+				</g>
+				<g>
+					<polygon fill="#012169" points="37.233,36.437 21.66,23.007 21.66,36.437 					"/>
+					<polyline fill="#C8102E" points="43.146,36.437 25.978,21.698 29.867,21.698 43.146,33.072 					"/>
+					<polyline fill="#012169" points="43.146,31.38 31.84,21.698 43.146,21.698 					"/>
+				</g>
+				<g>
+					<polygon fill="#012169" points="-2.234,36.437 13.339,23.007 13.339,36.437 					"/>
+					<polyline fill="#012169" points="-8.147,31.38 3.159,21.698 -8.147,21.698 					"/>
+					<polyline fill="#C8102E" points="12.948,21.698 -4.239,36.437 -8.146,36.437 9.018,21.698 					"/>
+				</g>
+			</g>
+			<rect x="15.102" y="-1.361" fill="#C8102E" width="4.795" height="37.798"/>
+			<rect x="-8.146" y="15.14" fill="#C8102E" width="51.291" height="4.795"/>
+		</g>
+	</g>
+</g>
+</svg>

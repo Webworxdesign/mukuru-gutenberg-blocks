@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="35px" height="35.059px" viewBox="0 0 35 35.059" enable-background="new 0 0 35 35.059" xml:space="preserve">
+<g>
+	<defs>
+		<path id="SVGID_1_" d="M0,17.529C0,7.864,7.835,0,17.5,0S35,7.864,35,17.529s-7.835,17.529-17.5,17.529S0,27.194,0,17.529z"/>
+	</defs>
+	<clipPath id="SVGID_2_">
+		<use xlink:href="#SVGID_1_"  overflow="visible"/>
+	</clipPath>
+	<g clip-path="url(#SVGID_2_)">
+		
+			<linearGradient id="AustrianFlag_1_" gradientUnits="userSpaceOnUse" x1="0.3472" y1="34.3992" x2="0.3472" y2="34.3406" gradientTransform="matrix(900 0 0 -600 -288.5 20638.9609)">
+			<stop  offset="0" style="stop-color:#ED2938"/>
+			<stop  offset="0.3333" style="stop-color:#ED2938"/>
+			<stop  offset="0.3333" style="stop-color:#EEEEEE"/>
+			<stop  offset="0.6667" style="stop-color:#EEEEEE"/>
+			<stop  offset="0.6667" style="stop-color:#ED2938"/>
+			<stop  offset="1" style="stop-color:#ED2938"/>
+		</linearGradient>
+		<rect id="AustrianFlag" x="-2.5" y="0" fill="url(#AustrianFlag_1_)" width="52.589" height="35.059"/>
+	</g>
+</g>
+</svg>
