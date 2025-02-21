@@ -79,3 +79,49 @@ function slick_slider_scripts_styles() {
 	}
 }
 add_action( 'enqueue_block_assets', 'slick_slider_scripts_styles' );
+
+add_action( 'wp_ajax_calculator_callback', 'calculator_callback' );
+add_action( 'wp_ajax_nopriv_calculator_callback', 'calculator_callback' );
+
+function calculator_product_callback() {
+    if(isset($_POST['in_code']) && isset($_POST['out_code'])) {
+        $productUrl = 'https://api.mukuru.com/taurus/v1/products/price-check?pay_out_country='.$_POST['out_code'].'&pay_in_country='.$_POST['in_code'];
+        $productResponse = wp_remote_get($productUrl);
+        $productBody = wp_remote_retrieve_body($productResponse);
+        $productData = json_decode($productBody, true);
+        echo $productBody;
+    }
+}
+add_action( 'wp_ajax_calculator_product_callback', 'calculator_product_callback' );
+add_action( 'wp_ajax_nopriv_calculator_product_callback', 'calculator_product_callback' );
+
+function mukuru_get_calc(){
+    $inCode = isset($_POST['inCode']) ? sanitize_text_field($_POST['inCode']) : '';
+    $inCurrency = isset($_POST['inCurrency']) ? sanitize_text_field($_POST['inCurrency']) : '';
+    $inAmount = isset($_POST['inAmount']) ? sanitize_text_field($_POST['inAmount']) : '';
+    $OutCode = isset($_POST['OutCode']) ? sanitize_text_field($_POST['OutCode']) : '';
+    $OutCurrency = isset($_POST['OutCurrency']) ? sanitize_text_field($_POST['OutCurrency']) : '';
+    $payOutType = isset($_POST['payOutType']) ? sanitize_text_field($_POST['payOutType']) : '';
+    $payingIn = isset($_POST['payingIn']) ? sanitize_text_field($_POST['payingIn']) : '';
+
+    if ($payingIn == 'true') {
+        $url = 'https://api.mukuru.com/taurus/v1/products/price-check?pay_in_country='.$inCode.'&pay_out_country='.$OutCode.'&pay_in_currency='.$inCurrency.'&pay_in_amount='.$inAmount.'&pay_out_currency='.$OutCurrency.'&type='.$payOutType;
+    } elseif ($payingIn == 'false') {
+        $url = 'https://api.mukuru.com/taurus/v1/products/price-check?pay_in_country='.$inCode.'&pay_out_country='.$OutCode.'&pay_out_amount='.$inAmount.'&pay_out_currency='.$OutCurrency.'&type='.$payOutType;
+    } else {
+        $url = 'https://api.mukuru.com/taurus/v1/products/price-check?pay_in_country='.$inCode.'&pay_out_country='.$OutCode.'&pay_in_currency='.$inCurrency.'&pay_in_amount='.$inAmount.'&type='.$payOutType;
+    }
+
+    $response = wp_remote_get($url);
+    if (is_wp_error($response)) {
+        echo json_encode(array('error' => 'Request failed'));
+        wp_die();
+    }
+
+    $body = wp_remote_retrieve_body($response);
+    echo $body;
+    wp_die();
+}
+
+add_action( 'wp_ajax_mukuru_get_calc', 'mukuru_get_calc' );
+add_action( 'wp_ajax_nopriv_mukuru_get_calc', 'mukuru_get_calc' );

@@ -10,6 +10,11 @@
  * @see https://github.com/WordPress/gutenberg/blob/trunk/docs/reference-guides/block-api/block-metadata.md#render
  */
 
+$mukuru_calculator_api = get_transient('mukuru_calculator_api');
+
+// Needed later.
+wp_enqueue_script('wp-api-fetch');
+
 // Generate unique id for aria-controls.
 $unique_id = wp_unique_id( 'p-' );
 
@@ -27,8 +32,10 @@ if($current_lang_default === 'en' || $current_lang_default === 'sa') {
 } else {
     $default_country = strtoupper(apply_filters( 'wpml_current_language', NULL ));
 }
+
 //Get all send options
 $s_field = $attributes['sendOptions']['fields'][0]['choices'];
+
 
 //Get currency by comparing default lang to $s_field options
 if(!empty($s_field)) {
@@ -46,11 +53,16 @@ if(!empty($s_field)) {
 //Get selected pay_out country
 $pay_out_fields = $attributes['payOutCountries'];
 
+// Ensure $pay_out_fields is an array
+if (!is_array($pay_out_fields)) {
+    $pay_out_fields = explode(',', $pay_out_fields);
+}
+
 //Get the pay_in Country code
 $pay_in_currency = $pay_in_fields;
 
 //Get the pay_out Country code
-$pay_out_currency = (explode(',',strtoupper($pay_out_fields)));
+$pay_out_currency = array_map('strtoupper', $pay_out_fields);
 
 $className = "";
 $currency = $pay_in_currency[1];
@@ -82,13 +94,36 @@ foreach( $receive_countries['items'] as $key => $country) {
     }
 }
 
+//Default receive options
+$rates_url = 'https://api.mukuru.com/taurus/v1/products/price-check?pay_in_country='.$pay_in_currency[0].'&pay_out_country='.$pay_out_currency[0].'&sales_channel=mobi&page_size=200';
+$rates_response = wp_remote_get($rates_url);
+$rates_body = wp_remote_retrieve_body($rates_response);
+$out_rates = json_decode($rates_body, true);
+
 ?>
 
 <div 
     <?php echo $wrapper_attributes; ?>
-    data-wp-interactive="check-rates" >
+    data-wp-interactive="calculator" 
+    <?php echo wp_interactivity_data_wp_context(
+        array( 
+            'isCalculating' => false,
+            'dropdownOpen' => false, 
+            'pay_in_country' => '',
+            'pay_out_country' => '',
+            'pay_in_currency' => '',
+            'pay_in_amount' => '',
+            'pay_out_currency' => '',
+            'type' => '',
+            'payingIn' => '' 
+        ) 
+    ); ?> 
+    data-wp-watch="callbacks.initCalculator" >
     <div class="calculator-wrapper">
-        <div class="mukuru-calculator <?php echo $className; ?>" data-preferred-out="<?= $pay_out_currency[0]; ?>" >
+        <div 
+            class="mukuru-calculator" 
+            data-preferred-out="<?= $pay_out_currency[0]; ?>" 
+            data-wp-on--keypress="actions.clickCalculateBtn" >
             <div class="calculator-header">
                 <div class="calculator-icon">
                     <svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -111,10 +146,10 @@ foreach( $receive_countries['items'] as $key => $country) {
                 </div>
                 <div class="inputs-wrapper">
                     <div class="currency_amount">
-                        <input type="number" lang="en" name="send-amount" placeholder="Enter amount" >
-                        <div class="selected_currency">
-                            <input class="hidden-currency" type="hidden" name="send-currency" value="<?= $pay_in_currency[1]; ?>">
-                            <input class="hidden-code" type="hidden" name="send-code" value="<?= $pay_in_currency[0]; ?>">
+                        <input type="number" lang="en" name="send-amount" placeholder="Enter amount" data-wp-on--keypress="callbacks.allowedKeys">
+                        <div class="selected_currency" data-wp-on--click="callbacks.selectCurrency">
+                            <input class="hidden-currency" type="hidden" name="send-currency" value="<?= $pay_in_currency[1]; ?>" data-wp-on--keypress="callbacks.allowedKeys">
+                            <input class="hidden-code" type="hidden" name="send-code" value="<?= $pay_in_currency[0]; ?>" data-wp-on--keypress="callbacks.allowedKeys">
                             <span class="calculator-pipe"></span>
                             <span class="text">
                                 <?php if (array_key_exists(1, $pay_in_currency)) {echo $pay_in_currency[1];}; ?>
@@ -132,17 +167,21 @@ foreach( $receive_countries['items'] as $key => $country) {
                     </div>
                     <div class="select_country hidden">
                         <div class="country_search">
-                            <input type="text" name="country-search" placeholder="Search Country">
-                            <span class="dropdown-arrow">
-                                <icon></icon>
+                            <input type="text" name="country-search" placeholder="Search Country" data-wp-on--focus="actions.searchingCountryFocus" data-wp-on--blur="actions.searchingCountryBlur" data-wp-on--keyup="actions.searchingCountryKeyup">
+                            <span class="dropdown-arrow" data-wp-on--focus="actions.searchingCountryFocus">
+                                <icon>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="13px" height="9px" viewBox="0 0 13 9" fill="none">
+                                        <path d="M11.713,0.633l-5.116,5.23L1.405,0.748L0.328,1.863l6.308,6.192l6.193-6.346L11.713,0.633z"/>
+                                    </svg>
+                                </icon>
                             </span>
                         </div>
                         <div class="currency_dropdown">
                             <?php foreach($sendCurrencies as $key => $value): ?>
                                 <span class="currency__option <?php echo $key.' '.$value[array_key_first($value)]; ?>
-                                <?php echo ($key == $pay_in_currency[1]) ? " selected" : "" ?>" data-id="<?= $value['id']; ?>" data-channel="<?= $value['channel']; ?>" data-currency="<?php echo $value[array_key_first($value)]; ?>" data-code="<?= $key; ?>">
+                                <?php echo ($key == $pay_in_currency[1]) ? " selected" : "" ?>" data-id="<?php echo $value['id']; ?>" data-channel="<?php echo $value['channel']; ?>" data-currency="<?php echo $value[array_key_first($value)]; ?>" data-code="<?php echo $key; ?>">
 
-                                    <span class="flag select <?= $key; ?>" data-os-flag="<?= $key; ?>"></span>
+                                    <span class="flag select <?php echo $key; ?>" data-os-flag="<?php echo $key; ?>"></span>
                                     <?php echo array_key_first($value); ?>
                                 </span>
                             <?php endforeach; ?>
@@ -165,10 +204,10 @@ foreach( $receive_countries['items'] as $key => $country) {
                 </div>
                 <div class="inputs-wrapper">
                     <div class="currency_amount <?php echo $currency2 == "" ? 'hidden' : ''; ?>">
-                        <input type="number" lang="en" name="receive-amount" placeholder="Enter amount">
-                        <div class="selected_currency">
-                            <input class="hidden-currency" type="hidden" name="receive-currency" value="<?php echo $out_currency; ?>">
-                            <input class="hidden-code" type="hidden" name="receive-code" value="<?php echo $out_code; ?>">
+                        <input type="number" lang="en" name="receive-amount" placeholder="Enter amount" data-wp-on--keypress="callbacks.allowedKeys">
+                        <div class="selected_currency" data-wp-on--click="callbacks.selectCurrency">
+                            <input class="hidden-currency" type="hidden" name="receive-currency" value="<?php echo $out_currency; ?>"data-wp-on--keypress="callbacks.allowedKeys">
+                            <input class="hidden-code" type="hidden" name="receive-code" value="<?php echo $out_code; ?>"data-wp-on--keypress="callbacks.allowedKeys">
                             <span class="calculator-pipe"></span>
                             <span class="text">
                                 <?= $out_currency; ?>
@@ -186,8 +225,8 @@ foreach( $receive_countries['items'] as $key => $country) {
                     </div>
                     <div class="select_country <?php echo $currency2 != "" ? 'hidden' : ''; ?>">
                         <div class="country_search">
-                            <input type="text" name="country-search" placeholder="Search Country">
-                            <span class="dropdown-arrow">
+                            <input type="text" name="country-search" placeholder="Search Country" data-wp-on--focus="actions.searchingCountryFocus" data-wp-on--keyup="actions.searchingCountryKeyup">
+                            <span class="dropdown-arrow" data-wp-on--focus="actions.searchingCountryFocus">
                                 <icon>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="13px" height="9px" viewBox="0 0 13 9" fill="none">
                                         <path d="M11.713,0.633l-5.116,5.23L1.405,0.748L0.328,1.863l6.308,6.192l6.193-6.346L11.713,0.633z"/>
@@ -198,12 +237,12 @@ foreach( $receive_countries['items'] as $key => $country) {
                         <div class="currency_dropdown">
                             <?php
                                 $payoutCountries = []; 
-                                if (isset($receive_countries->items) && is_array($receive_countries->items)) {
-                                    foreach($receive_countries->items as $key => $country):
+                                if (isset($receive_countries['items']) && is_array($receive_countries['items'])) {
+                                    foreach($receive_countries['items'] as $key => $country):
                                         ?>
-                                        <span class="currency__option <?php echo $key; ?> <?php echo $country->code; ?>" data-currency="<?php echo $country->baseCurrencyCode; ?>" data-code="<?php echo $country->code; ?>">
-                                                <span class="flag select <?php echo $country->code; ?>" data-os-flag="<?php echo $country->code; ?>"></span>
-                                                <?php echo $country->name; ?>
+                                        <span class="currency__option <?php echo $key; ?> <?php echo $country['code']; ?>" data-currency="<?php echo $country['baseCurrencyCode']; ?>" data-code="<?php echo $country['code']; ?>" data-wp-on--click="actions.currencyOption" data-wp-on--click="actions.currencyOptionReceive">
+                                                <span class="flag select <?php echo $country['code']; ?>" data-os-flag="<?php echo $country['code']; ?>"></span>
+                                                <?php echo $country['name']; ?>
                                         </span>
                                         <?php   
                                     endforeach;  
@@ -213,6 +252,7 @@ foreach( $receive_countries['items'] as $key => $country) {
                     </div>
                 </div>
             </div>
+
             <div class="mukuru-calculator__currency">
                 <div class="mukuru-calculator__label">
                     Receive method
@@ -220,7 +260,7 @@ foreach( $receive_countries['items'] as $key => $country) {
                 <div class="currency-options-wrapper" >
                     <ul class="selected-out-option">
                         <?php if (!empty($out_rates['items'])): ?>
-                            <li class="payout-method" data-calculator-type="<?= $out_rates['items'][0]['calculatorType']; ?>" data-type="<?= $out_rates['items'][0]['type']; ?>" data-payout-currency="<?= $out_rates['items'][0]['rate']['payOutCurrencyCode']; ?>">
+                            <li class="payout-method" data-calculator-type="<?= $out_rates['items'][0]['calculatorType']; ?>" data-type="<?= $out_rates['items'][0]['type']; ?>" data-payout-currency="<?= $out_rates['items'][0]['rate']['payOutCurrencyCode']; ?>" data-wp-on--click="actions.payoutMethods">
                                 <?= $out_rates['items'][0]['payoutName']; ?>
                             </li>
                         <?php endif; ?>
@@ -236,7 +276,7 @@ foreach( $receive_countries['items'] as $key => $country) {
                         <?php 
                             if (!empty($out_rates['items'])) {
                                 foreach ($out_rates['items'] as $key => $product) {
-                                    echo '<li class="payout-method" data-calculator-type="'.$product['calculatorType'].'" data-type="'.$product['type'].'" data-payout-currency="'.$product['rate']['payOutCurrencyCode'].'" >'.$product['payoutName'].'</li>';
+                                    echo '<li class="payout-method" data-calculator-type="'.$product['calculatorType'].'" data-type="'.$product['type'].'" data-payout-currency="'.$product['rate']['payOutCurrencyCode'].'" data-wp-on--click="actions.selectPayoutMethod">'.$product['payoutName'].'</li>';
                                 }
                             }
                         ?>
@@ -253,4 +293,5 @@ foreach( $receive_countries['items'] as $key => $country) {
             </div>
         </div>
     </div>
+    <a data-wp-on-document--click="callbacks.logClick"></a>
 </div>
