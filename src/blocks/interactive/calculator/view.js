@@ -9,6 +9,7 @@ store('calculator', {
     actions: {
         doCalculation: async (e) => {
             e.preventDefault();
+            console.log('doCalculation');
 
             const context = getContext();
             const self = getElement(context).ref;
@@ -18,37 +19,38 @@ store('calculator', {
 
             ajaxLoader('.mukuru-calculator__switch', 'absolute', false, false);
 
+            const calculator = self.closest('.mukuru-calculator');
+            const getValue = (selector) => calculator.querySelector(selector).value;
+            const getAttribute = (selector, attr) => calculator.querySelector(selector).getAttribute(attr);
+            const getTextContent = (selector) => calculator.querySelector(selector).textContent;
+
             let payInAmount;
             let payingIn = true;
-            const outCurrency = self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__currency .selected-out-option .payout-method').getAttribute('data-payout-currency');
-            const payInCurrency = self.closest('.mukuru-calculator').querySelector(".mukuru-calculator__send .hidden-currency").value;
-            const payInCode = self.closest('.mukuru-calculator').querySelector(".mukuru-calculator__send .hidden-code").value;
-            const payoutType = self.closest('.mukuru-calculator').querySelector(".mukuru-calculator__currency .selected-out-option .payout-method").getAttribute('data-type');
-            const calculatorType = self.closest('.mukuru-calculator').querySelector(".mukuru-calculator__currency .selected-out-option .payout-method").getAttribute('data-calculator-type');
-            const payoutName = self.closest('.mukuru-calculator').querySelector(".mukuru-calculator__currency .selected-out-option .payout-method").textContent;
+            const outCurrency = getAttribute('.mukuru-calculator__currency .selected-out-option .payout-method', 'data-payout-currency');
+            const payInCurrency = getValue(".mukuru-calculator__send .hidden-currency");
+            const payInCode = getValue(".mukuru-calculator__send .hidden-code");
+            const payoutType = getAttribute(".mukuru-calculator__currency .selected-out-option .payout-method", 'data-type');
+            const calculatorType = getAttribute(".mukuru-calculator__currency .selected-out-option .payout-method", 'data-calculator-type');
+            const payoutName = getTextContent(".mukuru-calculator__currency .selected-out-option .payout-method");
 
-            self.closest('.mukuru-calculator').querySelectorAll(".mukuru-calculator__send .charge-message").forEach(el => el.remove());
-            self.closest('.mukuru-calculator').querySelectorAll(".mukuru-calculator__receive .payout-message").forEach(el => el.remove());
+            calculator.querySelectorAll(".mukuru-calculator__send .charge-message, .mukuru-calculator__receive .payout-message").forEach(el => el.remove());
+            calculator.style.pointerEvents = 'none';
 
-            // Disable Calculator Inputs
-            self.closest('.mukuru-calculator').style.pointerEvents = 'none';
-
-            if (self.closest('.mukuru-calculator').querySelector(".mukuru-calculator__send input[name='send-amount']").value > 0) {
-                payInAmount = self.closest('.mukuru-calculator').querySelector(".mukuru-calculator__send input[name='send-amount']").value;
+            if (getValue(".mukuru-calculator__send input[name='send-amount']") > 0) {
+                payInAmount = getValue(".mukuru-calculator__send input[name='send-amount']");
             } else {
-                payInAmount = self.closest('.mukuru-calculator').querySelector(".mukuru-calculator__receive input[name='receive-amount']").value;
+                payInAmount = getValue(".mukuru-calculator__receive input[name='receive-amount']");
                 payingIn = false;
             }
 
-            const payOutCode = self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__receive .hidden-code').value;
+            const payOutCode = getValue('.mukuru-calculator__receive .hidden-code');
 
-            //  do wp ajax call
+            console.log({ payInCode, payInCurrency, outCurrency, payInAmount, payOutCode, payingIn, payoutType });
+
             try {
                 const response = await fetch('/wp-admin/admin-ajax.php', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams({
                         action: "mukuru_get_calc",
                         inCode: payInCode,
@@ -62,53 +64,50 @@ store('calculator', {
                 });
 
                 const data = await response.json();
-                removeLoader('.mukuru-calculator__switch');
-                let tableMarkup;
+                let tableMarkup = '';
+
                 data['items'].forEach(method => {
-                    console.log(method);
-                    if (method.payOutCurrencyCode === outCurrency && method.payoutName === payoutName && method.calculatorType === 'you-send') {
+                    if (method.payOutCurrencyCode === outCurrency && method.payoutName.trim() === payoutName.trim() && method.calculatorType === 'you-send') {
                         if (method.calculatorType === calculatorType && method.type === payoutType) {
-                            self.closest('.mukuru-calculator').querySelector("input[name='send-amount']").value = method.payInAmountSubTotal;
-                            self.closest('.mukuru-calculator').querySelector("input[name='receive-amount']").value = method.payOutAmountSubTotal;
-                            self.closest('.mukuru-calculator').querySelector(".mukuru-calculator__send").insertAdjacentHTML('beforeend', `<p class="charge-message">${method.payInAmountMessage}</p>`);
-                            self.closest('.mukuru-calculator').querySelector(".mukuru-calculator__receive").insertAdjacentHTML('beforeend', `<p class="payout-message">${method.payOutAmountMessage}</p>`);
+                            calculator.querySelector("input[name='send-amount']").value = method.payInAmountSubTotal;
+                            calculator.querySelector("input[name='receive-amount']").value = method.payOutAmountSubTotal;
+                            calculator.querySelector(".mukuru-calculator__send").insertAdjacentHTML('beforeend', `<p class="charge-message">${method.payInAmountMessage}</p>`);
+                            calculator.querySelector(".mukuru-calculator__receive").insertAdjacentHTML('beforeend', `<p class="payout-message">${method.payOutAmountMessage}</p>`);
 
                             tableMarkup = `<div class="uk-table-wrapper mb-2">
-                            <p>Send <span>${method.payInCurrencyCode} ${valueFormatting(method.payInAmountSubTotal)}</span></p>
-                            <p>Charge <span>${method.payInCurrencyCode} ${valueFormatting(method.fee.amount)}</span></p>
-                            <strong>
-                            <p>Total to pay <span>${method.payInCurrencyCode} ${valueFormatting(method.payInAmount)}</span></p>
-                            <p>They receive <span>${method.payOutCurrencyCode} ${valueFormatting(method.payOutAmount)}</span></p>
-                            </strong>
-                            ${method.uspMessage}
-                            </div>
-                            <div class="mb-1">
-                            <p class="exchange-rate">
-                                1.00 ${method['rate']['inverted'] ? method['rate']['payOutCurrencyCode'] : method['rate']['payInCurrencyCode']}
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
-                                    <g id="Group_1" data-name="Group 1" transform="translate(-383 -163.75)">
-                                    <circle id="Ellipse_1" data-name="Ellipse 1" cx="10" cy="10" r="10" transform="translate(383 163.75)" fill="#f05423"/>
-                                    <g id="exchange-rates" transform="translate(398.418 168.178) rotate(90)">
-                                        <path id="Path_1" data-name="Path 1" d="M2.652.223,0,2.875,1.041,3.916,2.412,2.545,2.348,9.376l1.487-.014L3.9,2.531,5.245,3.877,6.306,2.816,3.7.213A.729.729,0,0,0,3.18,0,.758.758,0,0,0,2.652.223Z" transform="translate(0 0)" fill="#fff"/>
-                                        <path id="Path_2" data-name="Path 2" d="M2.407,6.845,1.061,5.5,0,6.561l2.6,2.6a.729.729,0,0,0,.523.213.757.757,0,0,0,.528-.223L6.306,6.5,5.265,5.46,3.894,6.831,3.958,0,2.47.014Z" transform="translate(5.35 0.471)" fill="#fff"/>
-                                    </g>
-                                    </g>
-                                </svg>
-                                ${parseFloat(method['rate']['rate']).toFixed(4)} ${method['rate']['inverted'] ? method['rate']['payInCurrencyCode'] : method['rate']['payOutCurrencyCode']}
-                            </p>
-                            </div>`;
-
-                            self.closest('.mukuru-calculator').querySelector(".calculate-results").innerHTML = tableMarkup;
+                                <p>Send <span>${method.payInCurrencyCode} ${valueFormatting(method.payInAmountSubTotal)}</span></p>
+                                <p>Charge <span>${method.payInCurrencyCode} ${valueFormatting(method.fee.amount)}</span></p>
+                                <strong>
+                                <p>Total to pay <span>${method.payInCurrencyCode} ${valueFormatting(method.payInAmount)}</span></p>
+                                <p>They receive <span>${method.payOutCurrencyCode} ${valueFormatting(method.payOutAmount)}</span></p>
+                                </strong>
+                                ${method.uspMessage}
+                                </div>
+                                <div class="mb-1">
+                                <p class="exchange-rate">
+                                    1.00 ${method['rate']['inverted'] ? method['rate']['payOutCurrencyCode'] : method['rate']['payInCurrencyCode']}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+                                        <g id="Group_1" data-name="Group 1" transform="translate(-383 -163.75)">
+                                        <circle id="Ellipse_1" data-name="Ellipse 1" cx="10" cy="10" r="10" transform="translate(383 163.75)" fill="#f05423"/>
+                                        <g id="exchange-rates" transform="translate(398.418 168.178) rotate(90)">
+                                            <path id="Path_1" data-name="Path 1" d="M2.652.223,0,2.875,1.041,3.916,2.412,2.545,2.348,9.376l1.487-.014L3.9,2.531,5.245,3.877,6.306,2.816,3.7.213A.729.729,0,0,0,3.18,0,.758.758,0,0,0,2.652.223Z" transform="translate(0 0)" fill="#fff"/>
+                                            <path id="Path_2" data-name="Path 2" d="M2.407,6.845,1.061,5.5,0,6.561l2.6,2.6a.729.729,0,0,0,.523.213.757.757,0,0,0,.528-.223L6.306,6.5,5.265,5.46,3.894,6.831,3.958,0,2.47.014Z" transform="translate(5.35 0.471)" fill="#fff"/>
+                                        </g>
+                                        </g>
+                                    </svg>
+                                    ${parseFloat(method['rate']['rate']).toFixed(4)} ${method['rate']['inverted'] ? method['rate']['payInCurrencyCode'] : method['rate']['payOutCurrencyCode']}
+                                </p>
+                                </div>`;
                         }
                     } else {
-                        if (method['rate']['payOutCurrencyCode'] === outCurrency && method.payoutName === payoutName && method.calculatorType === calculatorType && method.type === payoutType) {
-                            self.closest('.mukuru-calculator').querySelector("input[name='send-amount']").value = method.payInAmount;
-                            self.closest('.mukuru-calculator').querySelector("input[name='receive-amount']").value = method.payOutAmount;
-                            self.closest('.mukuru-calculator').querySelector(".mukuru-calculator__send").insertAdjacentHTML('beforeend', `<p class="charge-message">${method.payInAmountMessage}</p>`);
-                            self.closest('.mukuru-calculator').querySelector(".mukuru-calculator__receive").insertAdjacentHTML('beforeend', `<p class="payout-message">${method.payOutAmountMessage}</p>`);
-                            self.closest('.mukuru-calculator').querySelector(".calculate-results").textContent = method['payOutAmountMessage'];
+                        if (method['rate']['payOutCurrencyCode'] === outCurrency && method.payoutName.trim() === payoutName.trim() && method.calculatorType === calculatorType && method.type === payoutType) {
+                            calculator.querySelector("input[name='send-amount']").value = method.payInAmount;
+                            calculator.querySelector("input[name='receive-amount']").value = method.payOutAmount;
+                            calculator.querySelector(".mukuru-calculator__send").insertAdjacentHTML('beforeend', `<p class="charge-message">${method.payInAmountMessage}</p>`);
+                            calculator.querySelector(".mukuru-calculator__receive").insertAdjacentHTML('beforeend', `<p class="payout-message">${method.payOutAmountMessage}</p>`);
+                            calculator.querySelector(".calculate-results").textContent = method['payOutAmountMessage'];
 
-                            self.closest('.mukuru-calculator').querySelector(".calculate-results").innerHTML = `
+                            calculator.querySelector(".calculate-results").innerHTML = `
                                 <div><p>Exchange rate</p>
                                 <p class="exchange-rate"> 1.00 ${method['rate']['inverted'] ? method['rate']['payOutCurrencyCode'] : method['rate']['payInCurrencyCode']}
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
@@ -126,13 +125,17 @@ store('calculator', {
                     }
                 });
 
-                // Enable Calculator Inputs
-                self.closest('.mukuru-calculator').style.pointerEvents = 'all';
+                calculator.querySelector(".calculate-results").innerHTML = tableMarkup;
+                calculator.style.pointerEvents = 'all';
+                removeLoader('.mukuru-calculator__switch');
             } catch (error) {
-                self.closest('.mukuru-calculator').querySelector(".calculate-results").textContent = '';
-                // Enable Calculator Inputs
-                self.closest('.mukuru-calculator').style.pointerEvents = 'all';
+                calculator.querySelector(".calculate-results").textContent = '';
+                calculator.style.pointerEvents = 'all';
+                removeLoader('.mukuru-calculator__switch');
             }
+
+            context.isCalculating = false;
+            console.log('***********');
         }, 
         currencyOption: (e) => {
 

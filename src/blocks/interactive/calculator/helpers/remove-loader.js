@@ -13,6 +13,6 @@ export default function removeLoader(targetEle) {
         child.style.opacity = "1";
     });
     setTimeout(() => {
-        targetEleFetch.querySelector('.lds-ring').style.display = "none";
+        targetEleFetch.querySelector('.lds-ring').remove();
     }, 600);
 }
