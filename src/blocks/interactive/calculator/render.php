@@ -240,7 +240,7 @@ $out_rates = json_decode($rates_body, true);
                                 if (isset($receive_countries['items']) && is_array($receive_countries['items'])) {
                                     foreach($receive_countries['items'] as $key => $country):
                                         ?>
-                                        <span class="currency__option <?php echo $key; ?> <?php echo $country['code']; ?>" data-currency="<?php echo $country['baseCurrencyCode']; ?>" data-code="<?php echo $country['code']; ?>" data-wp-on--click="actions.currencyOption" data-wp-on--click="actions.currencyOptionReceive">
+                                        <span class="currency__option <?php echo $key; ?> <?php echo $country['code']; ?>" data-currency="<?php echo $country['baseCurrencyCode']; ?>" data-code="<?php echo $country['code']; ?>" data-wp-on--click="actions.currencyOption" data-wp-on--change="callbacks.currencyOptionReceive">
                                                 <span class="flag select <?php echo $country['code']; ?>" data-os-flag="<?php echo $country['code']; ?>"></span>
                                                 <?php echo $country['name']; ?>
                                         </span>

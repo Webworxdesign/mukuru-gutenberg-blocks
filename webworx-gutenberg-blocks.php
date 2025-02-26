@@ -84,16 +84,35 @@ add_action( 'wp_ajax_calculator_callback', 'calculator_callback' );
 add_action( 'wp_ajax_nopriv_calculator_callback', 'calculator_callback' );
 
 function calculator_product_callback() {
-    if(isset($_POST['in_code']) && isset($_POST['out_code'])) {
-        $productUrl = 'https://api.mukuru.com/taurus/v1/products/price-check?pay_out_country='.$_POST['out_code'].'&pay_in_country='.$_POST['in_code'];
-        $productResponse = wp_remote_get($productUrl);
-        $productBody = wp_remote_retrieve_body($productResponse);
-        $productData = json_decode($productBody, true);
-        echo $productBody;
-    }
+	if (isset($_POST['in_code']) && isset($_POST['out_code'])) {
+		$productUrl = 'https://api.mukuru.com/taurus/v1/products/price-check?pay_out_country=' . sanitize_text_field($_POST['out_code']) . '&pay_in_country=' . sanitize_text_field($_POST['in_code']);
+		
+		// Generate a unique cache key based on the request parameters
+		$cache_key = 'mukuru_product_' . md5($productUrl);
+		$cached_response = get_transient($cache_key);
+
+		if ($cached_response !== false) {
+			echo $cached_response;
+			wp_die();
+		}
+
+		$productResponse = wp_remote_get($productUrl);
+		if (is_wp_error($productResponse)) {
+			echo json_encode(array('error' => 'Request failed'));
+			wp_die();
+		}
+
+		$productBody = wp_remote_retrieve_body($productResponse);
+
+		// Cache the response for 1 hour
+		set_transient($cache_key, $productBody, HOUR_IN_SECONDS);
+
+		echo $productBody;
+	}
+	wp_die();
 }
-add_action( 'wp_ajax_calculator_product_callback', 'calculator_product_callback' );
-add_action( 'wp_ajax_nopriv_calculator_product_callback', 'calculator_product_callback' );
+add_action('wp_ajax_calculator_product_callback', 'calculator_product_callback');
+add_action('wp_ajax_nopriv_calculator_product_callback', 'calculator_product_callback');
 
 function mukuru_get_calc(){
 	$inCode = isset($_POST['inCode']) ? sanitize_text_field($_POST['inCode']) : '';

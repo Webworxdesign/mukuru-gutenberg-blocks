@@ -162,36 +162,33 @@ store('calculator', {
             self.closest('.mukuru-calculator').querySelector('.calculate-results').innerHTML = '';
 
             context.dropdownOpen = false;            
+
+            if (self.closest('.mukuru-calculator__receive')) {
+                // Update receive methods
+                let selectedCode = self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__send .hidden-code').value;
+                let preferredCode = self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__receive .hidden-code').value;
+
+                // Disable Calculator Inputs
+                self.closest('.mukuru-calculator').style.pointerEvents = 'none';
+
+                self.closest('.mukuru-calculator').setAttribute('data-preferred-out', preferredCode);
+                self.closest('.inputs-wrapper').querySelector('.currency_amount > input').value = '';
+
+                ajaxReceiveMethods(self,selectedCode,preferredCode) 
+            }
+
+            if (self.closest('.mukuru-calculator__send')) { 
+                
+                //Clear payin value if the country changes 
+                self.closest('.inputs-wrapper').querySelector('.currency_amount > input').value = '';
+                self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__receive .currency_amount > input').value = '';
+
+                //Disable Calculator Inputs
+                self.closest('.mukuru-calculator').style.pointerEvents = 'none';
+
+                payoutCountriesAjax(self);
+            }
         }, 
-        currencyOptionReceive: () => {
-            const context = getContext();
-            const self = getElement(context).ref;            
-
-            // Update receive methods
-            let selectedCode = self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__send .hidden-code').value;
-            let preferredCode = self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__receive .hidden-code').value;
-
-            // Disable Calculator Inputs
-            self.closest('.mukuru-calculator').style.pointerEvents = 'none';
-
-            self.closest('.mukuru-calculator').setAttribute('data-preferred-out', preferredCode);
-            self.closest('.inputs-wrapper').querySelector('.currency_amount > input').value = '';
-
-            ajaxReceiveMethods(self,selectedCode,preferredCode) 
-        },
-        currencyOptionSend: () => {
-            const context = getContext();
-            const self = getElement(context).ref;  
-            //Clear payin value if the country changes 
-            self.closest('.inputs-wrapper').querySelector('.currency_amount > input').value = '';
-            self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__receive .currency_amount > input').value = '';
-
-            //Disable Calculator Inputs
-            self.closest('.mukuru-calculator').style.pointerEvents = 'none';
-
-            payoutCountriesAjax(self);
-
-        },
         searchingCountryFocus: () => {
             
             const context = getContext();
@@ -231,46 +228,6 @@ store('calculator', {
                     option.style.display = 'none';
                 }
             });
-        }, 
-        payoutMethods: () => {
-            const context = getContext();
-            const self = getElement(context).ref;            
-            self.closest('.mukuru-calculator__currency').classList.toggle('active');
-        }, 
-        selectPayoutMethod: () => {
-            const context = getContext();
-            const self = getElement(context).ref;
-
-            let selectedOptionCurrency = self.getAttribute('data-payout-currency');
-            let selectedOptionText = self.textContent;
-            let payType = self.getAttribute('data-type');
-            let calculatorType = self.getAttribute('data-calculator-type');
-            
-            self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__receive .currency_amount .text').textContent = selectedOptionCurrency;
-            self.closest('.currency-options-wrapper').querySelector('.selected-out-option li').setAttribute('data-payout-currency', selectedOptionCurrency);
-            self.closest('.currency-options-wrapper').querySelector('.selected-out-option li').textContent = selectedOptionText;
-            self.closest('.currency-options-wrapper').querySelector('.selected-out-option li').setAttribute('data-type', payType);
-            self.closest('.currency-options-wrapper').querySelector('.selected-out-option li').setAttribute('data-calculator-type', calculatorType);
-            self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__receive .currency_amount input[name="receive-amount"]').value = '';
-    
-            // Clear messaging
-            self.closest('.mukuru-calculator').querySelectorAll(".mukuru-calculator__send .charge-message").forEach(el => el.remove());
-            self.closest('.mukuru-calculator').querySelectorAll(".mukuru-calculator__receive .payout-message").forEach(el => el.remove());
-    
-            // Reset pay in and out values
-            if (calculatorType === "you-send") {
-                self.closest(".mukuru-calculator").querySelector('.mukuru-calculator__send .mukuru-calculator__label').textContent = 'You send';
-            } else {
-                self.closest(".mukuru-calculator").querySelector('.mukuru-calculator__send .mukuru-calculator__label').textContent = 'You pay';
-            }
-            self.closest('.mukuru-calculator').querySelector('.calculate-results').innerHTML = '';
-    
-            // Trigger Calculate
-            setTimeout(() => {
-                if (document.querySelector('.calculator-wrapper .mukuru-calculator input').value > 0) {
-                    document.querySelector('a[href="#calculate"]').click();
-                }
-            }, 10);
         }
     },
     callbacks: {
@@ -285,6 +242,53 @@ store('calculator', {
                 document.querySelector('.select_country').classList.add('hidden');
                 context.dropdownOpen = false;
             }
+
+            console.log(event.target); 
+            // payoutMethods
+            if ( event.target.closest('.selected-out-option') ) {
+                console.log('selected-out-option');
+                let self = event.target;
+                self.closest('.mukuru-calculator__currency').classList.toggle('active');
+            }
+
+            // selectPayoutMethod
+            if ( event.target.closest('.currency-out-options') ) {
+                console.log('currency-out-options');
+                let self = event.target;
+                let selectedOptionCurrency = self.getAttribute('data-payout-currency');
+                let selectedOptionText = self.textContent;
+                let payType = self.getAttribute('data-type');
+                let calculatorType = self.getAttribute('data-calculator-type');
+                
+                self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__receive .currency_amount .text').textContent = selectedOptionCurrency;
+                self.closest('.currency-options-wrapper').querySelector('.selected-out-option li').setAttribute('data-payout-currency', selectedOptionCurrency);
+                self.closest('.currency-options-wrapper').querySelector('.selected-out-option li').textContent = selectedOptionText;
+                self.closest('.currency-options-wrapper').querySelector('.selected-out-option li').setAttribute('data-type', payType);
+                self.closest('.currency-options-wrapper').querySelector('.selected-out-option li').setAttribute('data-calculator-type', calculatorType);
+                self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__receive .currency_amount input[name="receive-amount"]').value = '';
+        
+                // Clear messaging
+                self.closest('.mukuru-calculator').querySelectorAll(".mukuru-calculator__send .charge-message").forEach(el => el.remove());
+                self.closest('.mukuru-calculator').querySelectorAll(".mukuru-calculator__receive .payout-message").forEach(el => el.remove());
+        
+                // Reset pay in and out values
+                if (calculatorType === "you-send") {
+                    self.closest(".mukuru-calculator").querySelector('.mukuru-calculator__send .mukuru-calculator__label').textContent = 'You send';
+                } else {
+                    self.closest(".mukuru-calculator").querySelector('.mukuru-calculator__send .mukuru-calculator__label').textContent = 'You pay';
+                }
+                self.closest('.mukuru-calculator').querySelector('.calculate-results').innerHTML = '';
+                
+                self.closest('.mukuru-calculator__currency').classList.toggle('active');
+        
+                // Trigger Calculate
+                setTimeout(() => {
+                    if (document.querySelector('.calculator-wrapper .mukuru-calculator input').value > 0) {
+                        document.querySelector('a[href="#calculate"]').click();
+                    }
+                }, 10);
+            }
+
         },
         selectCurrency: () => {
             const context = getContext();
@@ -317,6 +321,6 @@ store('calculator', {
                     input.value = '';
                 }
             });
-        }
+        } 
     }
 });

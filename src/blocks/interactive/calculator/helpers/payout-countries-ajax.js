@@ -1,5 +1,6 @@
 import ajaxLoader from './ajax-loader';
 import removeLoader from './remove-loader';
+import ajaxReceiveMethods from './ajax-receive-methods';
 
 export default function payoutCountriesAjax(self) {
     console.log('payoutCountriesAjax');
@@ -31,7 +32,6 @@ export default function payoutCountriesAjax(self) {
         let hiddenCurrency = '';
         let hiddenCode = '';
         let flagCode = '';
-        let sendSelectedCode = self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__send .hidden-code').value;
 
         returnedNames.forEach(item => {
             if (returned[item]['payInCountryCode'] == preferredCode && preferredCode != selectedCode) {

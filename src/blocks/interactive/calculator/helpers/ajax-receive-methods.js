@@ -3,7 +3,9 @@ import removeLoader from './remove-loader';
 
 export default function ajaxReceiveMethods(self, selectedCode = 'ZA', preferredCode) {
 
-    console.log('ajaxReceiveMethods');
+    console.log('ajaxReceiveMethods'); 
+    
+    ajaxLoader('.mukuru-calculator__switch', 'absolute', false, false);
 
     fetch(mukuru_obj.ajaxurl, {
         method: 'POST',
@@ -16,11 +18,19 @@ export default function ajaxReceiveMethods(self, selectedCode = 'ZA', preferredC
             'out_code': preferredCode,
         })
     })
-    .then(response => response.json())
+    .then(response => response.text())
+    .then(text => {
+        try {
+            const jsonText = text.trim().replace(/[^}\]]+$/, '');
+            return JSON.parse(jsonText);
+        } catch (error) {
+            throw new Error('Invalid JSON: ' + text);
+        }
+    })
     .then(returned => {
-        let paymentMethods = returned?.items.map((product) => {
-            return `<li class="payout-method" data-calculator-type="${product.calculatorType}" data-type="${product.type}" data-payout-currency="${product.payOutCurrencyCode}">${product.payoutName}</li>`;
-        });
+        let paymentMethods = returned?.items?.map((product) => {
+            return `<li class="payout-method" data-calculator-type="${product.calculatorType}" data-type="${product.type}" data-payout-currency="${product.payOutCurrencyCode}" data-wp-on--click="actions.payoutMethods">${product.payoutName}</li>`;
+        }) || [];
 
         if (paymentMethods.length > 0) {
             // Change payin label
