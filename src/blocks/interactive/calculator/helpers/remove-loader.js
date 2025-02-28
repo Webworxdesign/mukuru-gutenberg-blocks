@@ -1,5 +1,8 @@
 export default function removeLoader(targetEle) {
+
     let targetEleFetch = document.querySelector(targetEle);
+
+    if (!targetEleFetch) return;
 
     document.querySelector('.mukuru-calculator .wp-block-button__link').style.pointerEvents = "all";
     document.querySelector('.mukuru-calculator .wp-block-button__link').style.opacity = "1";
@@ -15,4 +18,5 @@ export default function removeLoader(targetEle) {
     setTimeout(() => {
         targetEleFetch.querySelector('.lds-ring').remove();
     }, 600);
+    
 }

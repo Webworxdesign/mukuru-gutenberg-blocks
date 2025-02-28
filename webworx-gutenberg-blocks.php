@@ -47,8 +47,6 @@ function auto_register_mukuru_block_types() {
 	};
 }
 
-
-
 /**
  * Add slick slider scripts and style.
  */
@@ -79,9 +77,6 @@ function slick_slider_scripts_styles() {
 	}
 }
 add_action( 'enqueue_block_assets', 'slick_slider_scripts_styles' );
-
-add_action( 'wp_ajax_calculator_callback', 'calculator_callback' );
-add_action( 'wp_ajax_nopriv_calculator_callback', 'calculator_callback' );
 
 function calculator_product_callback() {
 	if (isset($_POST['in_code']) && isset($_POST['out_code'])) {

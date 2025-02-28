@@ -3,12 +3,14 @@ import removeLoader from './remove-loader';
 import ajaxReceiveMethods from './ajax-receive-methods';
 
 export default function payoutCountriesAjax(self) {
-    console.log('payoutCountriesAjax');
+    
     let selectedID = self.getAttribute('data-id');
     let selectedChannel = self.getAttribute('data-channel');
     let selectedCode = self.getAttribute('data-code');
     let preferredCode = self.closest('.mukuru-calculator').getAttribute('data-preferred-out');
+
     removeLoader('.mukuru-calculator__switch');
+
     ajaxLoader('.mukuru-calculator__switch', 'absolute', false, false);
 
     fetch(mukuru_obj.ajaxurl, {
@@ -26,28 +28,35 @@ export default function payoutCountriesAjax(self) {
     })
     .then(response => response.json())
     .then(returned => {
+
+        console.log(returned);
+        
+        if (returned.status !== 'success') {
+            throw new Error('Failed to fetch data');
+        }
+
         let newList = '';
-        let returnedNames = Object.keys(returned);
+        let returnedNames = Object.keys(returned.data);
         returnedNames.sort();
         let hiddenCurrency = '';
         let hiddenCode = '';
         let flagCode = '';
 
         returnedNames.forEach(item => {
-            if (returned[item]['payInCountryCode'] == preferredCode && preferredCode != selectedCode) {
-                hiddenCurrency = returned[item]['payOutCurrencyCode'];
-                hiddenCode = returned[item]['payOutCountryCode'];
-                flagCode = returned[item]['payInCountryCode'];
+            if (returned.data[item]['payInCountryCode'] == preferredCode && preferredCode != selectedCode) {
+                hiddenCurrency = returned.data[item]['payOutCurrencyCode'];
+                hiddenCode = returned.data[item]['payOutCountryCode'];
+                flagCode = returned.data[item]['payInCountryCode'];
             }
 
-            newList += `<span class="currency__option ${returned[item]['payInCountryCode']} ${returned[item]['payOutCurrencyCode']}" data-currency="${returned[item]['payOutCurrencyCode']}" data-code="${returned[item]['payInCountryCode']}"><span class="flag select ${returned[item]['payInCountryCode']}" data-os-flag=""></span>${item}</span>`;
+            newList += `<span class="currency__option ${returned.data[item]['payInCountryCode']} ${returned.data[item]['payOutCurrencyCode']}" data-currency="${returned.data[item]['payOutCurrencyCode']}" data-code="${returned.data[item]['payInCountryCode']}"><span class="flag select ${returned.data[item]['payInCountryCode']}" data-os-flag=""></span>${item}</span>`;
         });
 
         if (hiddenCurrency === '') {
-            hiddenCurrency = returned[returnedNames[0]]['payOutCurrencyCode'];
-            hiddenCode = returned[returnedNames[0]]['payOutCountryCode'];
-            flagCode = returned[returnedNames[0]]['payInCountryCode'];
-            preferredCode = returned[returnedNames[0]]['payOutCountryCode'];
+            hiddenCurrency = returned.data[returnedNames[0]]['payOutCurrencyCode'];
+            hiddenCode = returned.data[returnedNames[0]]['payOutCountryCode'];
+            flagCode = returned.data[returnedNames[0]]['payInCountryCode'];
+            preferredCode = returned.data[returnedNames[0]]['payOutCountryCode'];
         }
 
         let calculator = self.closest('.mukuru-calculator');
@@ -62,6 +71,7 @@ export default function payoutCountriesAjax(self) {
 
         // Enable Calculator Inputs
         calculator.style.pointerEvents = 'all';
+        document.querySelector('a[href="#calculate"]').click();
     })
     .catch(error => {
         console.error('Error:', error);

@@ -45,8 +45,6 @@ store('calculator', {
 
             const payOutCode = getValue('.mukuru-calculator__receive .hidden-code');
 
-            console.log({ payInCode, payInCurrency, outCurrency, payInAmount, payOutCode, payingIn, payoutType });
-
             try {
                 const response = await fetch('/wp-admin/admin-ajax.php', {
                     method: 'POST',
@@ -135,7 +133,6 @@ store('calculator', {
             }
 
             context.isCalculating = false;
-            console.log('***********');
         }, 
         currencyOption: (e) => {
 
@@ -231,29 +228,26 @@ store('calculator', {
         }
     },
     callbacks: {
-        initCalculator: () => {
-            console.log('initCalculator');
-        },
         logClick(event) {
             const context = getContext();
 
             if (context.dropdownOpen && !event.target.closest('.select_country')) {
-                document.querySelector('.currency_amount').classList.remove('hidden');
-                document.querySelector('.select_country').classList.add('hidden');
+                console.log('close dropdown');
+                
+                document.body.querySelector('.mukuru-calculator__receive .currency_amount').classList.remove('hidden');
+                document.body.querySelector('.mukuru-calculator__receive .select_country').classList.add('hidden');
+                    
                 context.dropdownOpen = false;
             }
 
-            console.log(event.target); 
             // payoutMethods
             if ( event.target.closest('.selected-out-option') ) {
-                console.log('selected-out-option');
                 let self = event.target;
                 self.closest('.mukuru-calculator__currency').classList.toggle('active');
             }
 
             // selectPayoutMethod
             if ( event.target.closest('.currency-out-options') ) {
-                console.log('currency-out-options');
                 let self = event.target;
                 let selectedOptionCurrency = self.getAttribute('data-payout-currency');
                 let selectedOptionText = self.textContent;
@@ -312,9 +306,10 @@ store('calculator', {
                 event.preventDefault();
             }
 
-            let value = Number(self.value);
-            let rounded = value.toFixed();
-            self.value = rounded;
+            let value = self.value;
+            if (value.length > 1 && value[0] === '0') {
+                self.value = value.substring(1);
+            }
 
             self.closest(".mukuru-calculator").querySelectorAll(".currency_amount input[type='number']").forEach(input => {
                 if (input !== self) {

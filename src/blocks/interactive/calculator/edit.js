@@ -13,7 +13,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { useBlockProps, InspectorControls, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import { Fragment } from '@wordpress/element';
-import { SelectControl, PanelBody, TextControl, Flex, FlexItem } from '@wordpress/components';
+import { SelectControl, PanelBody, __experimentalNumberControl as NumberControl, Flex, FlexItem } from '@wordpress/components';
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -35,7 +35,7 @@ import DropdownIcon from './icons/dropdown-icon';
 import SwitchIcon from './icons/switch-icon';
 
 export default function Edit({ attributes, setAttributes }) {
-    const { payIn, payOutCountries } = attributes;
+    const { sendAmountInput, payIn, payOutCountries } = attributes;
 
     // Add class to blockProps 
     const blockProps = useBlockProps();
@@ -56,6 +56,13 @@ export default function Edit({ attributes, setAttributes }) {
                         initialOpen={false}
                         >
                         <Fragment>
+
+                            <NumberControl
+                                label={__('Default Send Amount', 'mukuru-gutenberg-blocks')}  
+                                value={sendAmountInput} 
+                                onChange={(sendAmountInput) => setAttributes({ sendAmountInput })} 
+                                />
+
                             <SelectControl 
                                 label={__('Pay In', 'mukuru-gutenberg-blocks')} 
                                 value={payIn} 
@@ -153,7 +160,7 @@ export default function Edit({ attributes, setAttributes }) {
                         <div className="mukuru-calculator__label">You pay</div>
                         <div className="inputs-wrapper">
                             <div className="currency_amount">
-                                <input type="number" lang="en" name="send-amount" placeholder="Enter amount" />
+                                <input type="number" lang="en" name="send-amount" placeholder="Enter amount" value={sendAmountInput} />
                                 <div className="selected_currency">
                                     <input className="hidden-currency" type="hidden" name="send-currency" value="" />
                                     <input className="hidden-code" type="hidden" name="send-code" value={payInCountry} />

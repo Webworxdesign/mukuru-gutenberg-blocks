@@ -12,6 +12,10 @@
 		"interactivity": true
 	},
 	"attributes": {  
+		"sendAmountInput": {
+			"type": "string",
+			"default": "100"
+		}, 
 		"payIn": {
 			"type": "string", 
 			"default": "default"

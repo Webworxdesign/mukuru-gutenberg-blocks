@@ -65,8 +65,8 @@ $pay_in_currency = $pay_in_fields;
 $pay_out_currency = array_map('strtoupper', $pay_out_fields);
 
 $className = "";
-$currency = $pay_in_currency[1];
-$currency2 = $pay_out_currency[1];
+$currency = isset($pay_in_currency[1]) ? $pay_in_currency[1] : '';
+$currency2 = isset($pay_out_currency[1]) ? $pay_out_currency[1] : '';
 
 //Create array of currency => Country Name
 $sendCurrencies = array();
@@ -146,7 +146,7 @@ $out_rates = json_decode($rates_body, true);
                 </div>
                 <div class="inputs-wrapper">
                     <div class="currency_amount">
-                        <input type="number" lang="en" name="send-amount" placeholder="Enter amount" data-wp-on--keypress="callbacks.allowedKeys">
+                        <input type="number" lang="en" name="send-amount" placeholder="Enter amount" data-wp-on--keypress="callbacks.allowedKeys" value="<? echo $attributes['sendAmountInput']; ?>">
                         <div class="selected_currency" data-wp-on--click="callbacks.selectCurrency">
                             <input class="hidden-currency" type="hidden" name="send-currency" value="<?= $pay_in_currency[1]; ?>" data-wp-on--keypress="callbacks.allowedKeys">
                             <input class="hidden-code" type="hidden" name="send-code" value="<?= $pay_in_currency[0]; ?>" data-wp-on--keypress="callbacks.allowedKeys">
@@ -179,7 +179,7 @@ $out_rates = json_decode($rates_body, true);
                         <div class="currency_dropdown">
                             <?php foreach($sendCurrencies as $key => $value): ?>
                                 <span class="currency__option <?php echo $key.' '.$value[array_key_first($value)]; ?>
-                                <?php echo ($key == $pay_in_currency[1]) ? " selected" : "" ?>" data-id="<?php echo $value['id']; ?>" data-channel="<?php echo $value['channel']; ?>" data-currency="<?php echo $value[array_key_first($value)]; ?>" data-code="<?php echo $key; ?>">
+                                <?php echo ($key == $pay_in_currency[1]) ? " selected" : "" ?>" data-id="<?php echo $value['id']; ?>" data-channel="<?php echo $value['channel']; ?>" data-currency="<?php echo $value[array_key_first($value)]; ?>" data-code="<?php echo $key; ?>" data-wp-on--click="actions.currencyOption">
 
                                     <span class="flag select <?php echo $key; ?>" data-os-flag="<?php echo $key; ?>"></span>
                                     <?php echo array_key_first($value); ?>
@@ -240,7 +240,7 @@ $out_rates = json_decode($rates_body, true);
                                 if (isset($receive_countries['items']) && is_array($receive_countries['items'])) {
                                     foreach($receive_countries['items'] as $key => $country):
                                         ?>
-                                        <span class="currency__option <?php echo $key; ?> <?php echo $country['code']; ?>" data-currency="<?php echo $country['baseCurrencyCode']; ?>" data-code="<?php echo $country['code']; ?>" data-wp-on--click="actions.currencyOption" data-wp-on--change="callbacks.currencyOptionReceive">
+                                        <span class="currency__option <?php echo $key; ?> <?php echo $country['code']; ?>" data-currency="<?php echo $country['baseCurrencyCode']; ?>" data-code="<?php echo $country['code']; ?>" data-wp-on--click="actions.currencyOption" >
                                                 <span class="flag select <?php echo $country['code']; ?>" data-os-flag="<?php echo $country['code']; ?>"></span>
                                                 <?php echo $country['name']; ?>
                                         </span>
@@ -276,7 +276,7 @@ $out_rates = json_decode($rates_body, true);
                         <?php 
                             if (!empty($out_rates['items'])) {
                                 foreach ($out_rates['items'] as $key => $product) {
-                                    echo '<li class="payout-method" data-calculator-type="'.$product['calculatorType'].'" data-type="'.$product['type'].'" data-payout-currency="'.$product['rate']['payOutCurrencyCode'].'" data-wp-on--click="actions.selectPayoutMethod">'.$product['payoutName'].'</li>';
+                                    echo '<li class="payout-method" data-calculator-type="'.$product['calculatorType'].'" data-type="'.$product['type'].'" data-payout-currency="'.$product['rate']['payOutCurrencyCode'].'" >'.$product['payoutName'].'</li>';
                                 }
                             }
                         ?>

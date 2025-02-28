@@ -2,8 +2,6 @@ import ajaxLoader from './ajax-loader';
 import removeLoader from './remove-loader';
 
 export default function ajaxReceiveMethods(self, selectedCode = 'ZA', preferredCode) {
-
-    console.log('ajaxReceiveMethods'); 
     
     ajaxLoader('.mukuru-calculator__switch', 'absolute', false, false);
 
@@ -49,6 +47,7 @@ export default function ajaxReceiveMethods(self, selectedCode = 'ZA', preferredC
 
         // Enable Calculator Inputs
         document.querySelector('.mukuru-calculator').style.pointerEvents = 'all';
+        document.querySelector('a[href="#calculate"]').click();
     })
     .catch(error => {
         console.error('Error:', error);
