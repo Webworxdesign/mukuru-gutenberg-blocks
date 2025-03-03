@@ -5,6 +5,12 @@ export default function ajaxReceiveMethods(self, selectedCode = 'ZA', preferredC
     
     ajaxLoader('.mukuru-calculator__switch', 'absolute', false, false);
 
+    if (typeof mukuru_obj === 'undefined' || !mukuru_obj.ajaxurl) {
+        console.error('mukuru_obj or mukuru_obj.ajaxurl is not defined');
+        removeLoader('.mukuru-calculator__switch');
+        return;
+    }
+
     fetch(mukuru_obj.ajaxurl, {
         method: 'POST',
         headers: {
@@ -43,11 +49,14 @@ export default function ajaxReceiveMethods(self, selectedCode = 'ZA', preferredC
         } else {
             console.error('No payment methods available');
         }
-        removeLoader('.mukuru-calculator__switch');
 
         // Enable Calculator Inputs
         document.querySelector('.mukuru-calculator').style.pointerEvents = 'all';
-        document.querySelector('a[href="#calculate"]').click();
+
+        setTimeout(() => {
+            document.querySelector('a[href="#calculate"]').click();
+            removeLoader('.mukuru-calculator__switch');
+        }, 600);
     })
     .catch(error => {
         console.error('Error:', error);

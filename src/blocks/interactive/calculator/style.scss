@@ -339,6 +339,8 @@
 				margin-top: 13px;
 				&.is-style-big-white-outline-button {
 					width: 100%;
+					opacity: 0 !important; 
+					position: absolute;
 					a {
 						width: 100%;
 					}

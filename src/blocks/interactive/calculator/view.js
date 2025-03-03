@@ -14,8 +14,8 @@ store('calculator', {
             const context = getContext();
             const self = getElement(context).ref;
 
+            context.isCalculating = false;
             if (context.isCalculating) return;
-            context.isCalculating = true;
 
             ajaxLoader('.mukuru-calculator__switch', 'absolute', false, false);
 
@@ -134,58 +134,6 @@ store('calculator', {
 
             context.isCalculating = false;
         }, 
-        currencyOption: (e) => {
-
-            e.preventDefault();
-            const context = getContext();
-            const self = getElement(context).ref;            
-
-            let currency = self.getAttribute('data-currency');
-            let countryCode = self.getAttribute('data-code');
-            self.closest(".inputs-wrapper").querySelectorAll(".selected").forEach(el => el.classList.remove('selected'));
-            self.classList.add('selected');
-            self.closest(".inputs-wrapper").querySelector(".currency_amount").classList.remove('hidden');
-            self.closest(".inputs-wrapper").querySelector(".select_country").classList.add('hidden');
-            self.closest(".inputs-wrapper").querySelector(".selected_currency .text").textContent = currency;
-            self.closest(".inputs-wrapper").querySelector(".selected_currency .hidden-currency").value = currency;
-            self.closest(".inputs-wrapper").querySelector(".selected_currency .hidden-code").value = countryCode;
-            self.closest(".inputs-wrapper").querySelector(".selected_currency .flag").className = 'flag ' + countryCode;
-
-            // Clear messaging
-            self.closest('.mukuru-calculator').querySelectorAll(".mukuru-calculator__send .charge-message").forEach(el => el.remove());
-            self.closest('.mukuru-calculator').querySelectorAll(".mukuru-calculator__receive .payout-message").forEach(el => el.remove());
-
-            // Clear out values
-            self.closest('.mukuru-calculator').querySelector('.calculate-results').innerHTML = '';
-
-            context.dropdownOpen = false;            
-
-            if (self.closest('.mukuru-calculator__receive')) {
-                // Update receive methods
-                let selectedCode = self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__send .hidden-code').value;
-                let preferredCode = self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__receive .hidden-code').value;
-
-                // Disable Calculator Inputs
-                self.closest('.mukuru-calculator').style.pointerEvents = 'none';
-
-                self.closest('.mukuru-calculator').setAttribute('data-preferred-out', preferredCode);
-                self.closest('.inputs-wrapper').querySelector('.currency_amount > input').value = '';
-
-                ajaxReceiveMethods(self,selectedCode,preferredCode) 
-            }
-
-            if (self.closest('.mukuru-calculator__send')) { 
-                
-                //Clear payin value if the country changes 
-                self.closest('.inputs-wrapper').querySelector('.currency_amount > input').value = '';
-                self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__receive .currency_amount > input').value = '';
-
-                //Disable Calculator Inputs
-                self.closest('.mukuru-calculator').style.pointerEvents = 'none';
-
-                payoutCountriesAjax(self);
-            }
-        }, 
         searchingCountryFocus: () => {
             
             const context = getContext();
@@ -228,6 +176,17 @@ store('calculator', {
         }
     },
     callbacks: {
+        initCalculator: () => {
+
+            const context = getContext();
+            const self = getElement(context).ref;
+            
+            if(self.classList.contains('loaded')) return;
+
+            self.classList.add('loaded');
+            document.querySelector('a[href="#calculate"]').click();
+            
+        }, 
         logClick(event) {
             const context = getContext();
 
@@ -238,6 +197,57 @@ store('calculator', {
                 document.body.querySelector('.mukuru-calculator__receive .select_country').classList.add('hidden');
                     
                 context.dropdownOpen = false;
+            }
+
+            // currencyOption
+            if ( event.target.closest('.currency__option') ) {
+                event.preventDefault();
+                let self = event.target;
+                let currency = self.getAttribute('data-currency');
+                let countryCode = self.getAttribute('data-code');
+                self.closest(".inputs-wrapper").querySelectorAll(".selected").forEach(el => el.classList.remove('selected'));
+                self.classList.add('selected');
+                self.closest(".inputs-wrapper").querySelector(".currency_amount").classList.remove('hidden');
+                self.closest(".inputs-wrapper").querySelector(".select_country").classList.add('hidden');
+                self.closest(".inputs-wrapper").querySelector(".selected_currency .text").textContent = currency;
+                self.closest(".inputs-wrapper").querySelector(".selected_currency .hidden-currency").value = currency;
+                self.closest(".inputs-wrapper").querySelector(".selected_currency .hidden-code").value = countryCode;
+                self.closest(".inputs-wrapper").querySelector(".selected_currency .flag").className = 'flag ' + countryCode;
+
+                // Clear messaging
+                self.closest('.mukuru-calculator').querySelectorAll(".mukuru-calculator__send .charge-message").forEach(el => el.remove());
+                self.closest('.mukuru-calculator').querySelectorAll(".mukuru-calculator__receive .payout-message").forEach(el => el.remove());
+
+                // Clear out values
+                self.closest('.mukuru-calculator').querySelector('.calculate-results').innerHTML = '';
+
+                context.dropdownOpen = false;            
+
+                if (self.closest('.mukuru-calculator__receive')) {
+                    // Update receive methods
+                    let selectedCode = self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__send .hidden-code').value;
+                    let preferredCode = self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__receive .hidden-code').value;
+
+                    // Disable Calculator Inputs
+                    self.closest('.mukuru-calculator').style.pointerEvents = 'none';
+
+                    self.closest('.mukuru-calculator').setAttribute('data-preferred-out', preferredCode);
+                    // self.closest('.inputs-wrapper').querySelector('.currency_amount > input').value = '';
+
+                    ajaxReceiveMethods(self,selectedCode,preferredCode) 
+                }
+
+                if (self.closest('.mukuru-calculator__send')) { 
+                    
+                    //Clear payin value if the country changes 
+                    // self.closest('.inputs-wrapper').querySelector('.currency_amount > input').value = '';
+                    self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__receive .currency_amount > input').value = '';
+
+                    //Disable Calculator Inputs
+                    self.closest('.mukuru-calculator').style.pointerEvents = 'none';
+
+                    payoutCountriesAjax(self);
+                }
             }
 
             // payoutMethods

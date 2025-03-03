@@ -9,8 +9,6 @@ export default function payoutCountriesAjax(self) {
     let selectedCode = self.getAttribute('data-code');
     let preferredCode = self.closest('.mukuru-calculator').getAttribute('data-preferred-out');
 
-    removeLoader('.mukuru-calculator__switch');
-
     ajaxLoader('.mukuru-calculator__switch', 'absolute', false, false);
 
     fetch(mukuru_obj.ajaxurl, {
@@ -28,35 +26,29 @@ export default function payoutCountriesAjax(self) {
     })
     .then(response => response.json())
     .then(returned => {
-
-        console.log(returned);
         
-        if (returned.status !== 'success') {
-            throw new Error('Failed to fetch data');
-        }
-
         let newList = '';
-        let returnedNames = Object.keys(returned.data);
+        let returnedNames = Object.keys(returned);
         returnedNames.sort();
         let hiddenCurrency = '';
         let hiddenCode = '';
         let flagCode = '';
 
         returnedNames.forEach(item => {
-            if (returned.data[item]['payInCountryCode'] == preferredCode && preferredCode != selectedCode) {
-                hiddenCurrency = returned.data[item]['payOutCurrencyCode'];
-                hiddenCode = returned.data[item]['payOutCountryCode'];
-                flagCode = returned.data[item]['payInCountryCode'];
+            if (returned[item]['id'] == preferredCode && preferredCode != selectedCode) {
+                hiddenCurrency = returned[item][Object.keys(returned[item])[0]];
+                hiddenCode = item;
+                flagCode = item;
             }
 
-            newList += `<span class="currency__option ${returned.data[item]['payInCountryCode']} ${returned.data[item]['payOutCurrencyCode']}" data-currency="${returned.data[item]['payOutCurrencyCode']}" data-code="${returned.data[item]['payInCountryCode']}"><span class="flag select ${returned.data[item]['payInCountryCode']}" data-os-flag=""></span>${item}</span>`;
+            newList += `<span class="currency__option ${item} ${returned[item][Object.keys(returned[item])[0]]}" data-currency="${returned[item][Object.keys(returned[item])[0]]}" data-code="${item}"><span class="flag select ${item}" data-os-flag=""></span>${Object.keys(returned[item])[0]}</span>`;
         });
 
         if (hiddenCurrency === '') {
-            hiddenCurrency = returned.data[returnedNames[0]]['payOutCurrencyCode'];
-            hiddenCode = returned.data[returnedNames[0]]['payOutCountryCode'];
-            flagCode = returned.data[returnedNames[0]]['payInCountryCode'];
-            preferredCode = returned.data[returnedNames[0]]['payOutCountryCode'];
+            hiddenCurrency = returned[returnedNames[0]][Object.keys(returned[returnedNames[0]])[0]];
+            hiddenCode = returnedNames[0];
+            flagCode = returnedNames[0];
+            preferredCode = returnedNames[0];
         }
 
         let calculator = self.closest('.mukuru-calculator');

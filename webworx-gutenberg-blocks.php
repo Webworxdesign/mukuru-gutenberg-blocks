@@ -78,6 +78,55 @@ function slick_slider_scripts_styles() {
 }
 add_action( 'enqueue_block_assets', 'slick_slider_scripts_styles' );
 
+function calculator_callback() {  
+	
+    //Get selected pay_in country
+    $pay_in_fields = [];
+
+	//Get all send options
+    $s_field = get_field_object('field_62d93d0df3955')['choices'];
+
+    //Get currency by comparing default lang to $s_field options
+    if(!empty($s_field)) {
+        foreach ($s_field as $key => $country) {
+            $exploded_key = explode(',',$key);
+            if( $exploded_key[0] === $default_country ) {
+                $pay_in_fields = [
+                    $default_country,
+                    $exploded_key[1]
+                ];
+            }
+        }
+    }
+	
+	//Get the pay_in Country code
+    $pay_in_currency = $pay_in_fields;
+	
+	$currency = $pay_in_currency[1];
+    $currency2 = $pay_out_currency[1];
+    
+    //Create array of currency => Country Name
+    $sendCurrencies = array();
+    foreach ($s_field as $key => $s_choice) {   
+        $current_currency = explode(',', $key);
+        $sendCurrencies[strtoupper($current_currency[0])] = array(
+            $s_choice => $current_currency[1],
+            'id' => $current_currency[2],
+            'channel'=> $current_currency[3]
+        );
+    }
+
+	// merge $pay_in_currency and $sendCurrencies
+	$pay_in_currency = array_merge($pay_in_currency, $sendCurrencies);
+
+	echo json_encode($pay_in_currency);
+
+	wp_die();
+}
+
+add_action( 'wp_ajax_calculator_callback', 'calculator_callback' );
+add_action( 'wp_ajax_nopriv_calculator_callback', 'calculator_callback' );
+
 function calculator_product_callback() {
 	if (isset($_POST['in_code']) && isset($_POST['out_code'])) {
 		$productUrl = 'https://api.mukuru.com/taurus/v1/products/price-check?pay_out_country=' . sanitize_text_field($_POST['out_code']) . '&pay_in_country=' . sanitize_text_field($_POST['in_code']);
