@@ -3,13 +3,12 @@ import ajaxLoader from './helpers/ajax-loader';
 import removeLoader from './helpers/remove-loader';
 import valueFormatting from './helpers/value-formatting';
 import payoutCountriesAjax from './helpers/payout-countries-ajax';
-import ajaxReceiveMethods from './helpers/ajax-receive-methods';
+import ajaxReceiveMethods from './helpers/ajax-receive-methods'; 
 
 store('calculator', {
     actions: {
         doCalculation: async (e) => {
             e.preventDefault();
-            console.log('doCalculation');
 
             const context = getContext();
             const self = getElement(context).ref;
@@ -191,7 +190,6 @@ store('calculator', {
             const context = getContext();
 
             if (context.dropdownOpen && !event.target.closest('.select_country')) {
-                console.log('close dropdown');
                 
                 document.body.querySelector('.mukuru-calculator__receive .currency_amount').classList.remove('hidden');
                 document.body.querySelector('.mukuru-calculator__receive .select_country').classList.add('hidden');
@@ -234,14 +232,24 @@ store('calculator', {
                     self.closest('.mukuru-calculator').setAttribute('data-preferred-out', preferredCode);
                     // self.closest('.inputs-wrapper').querySelector('.currency_amount > input').value = '';
 
+                    // Clear out values except the selected one 
+                    self.closest(".mukuru-calculator").querySelectorAll(".currency_amount input[type='number']").forEach(input => {
+                        if ( input !== document.querySelector('input[name="receive-amount"]') ) {
+                            input.value = '';
+                        }
+                    });
+
                     ajaxReceiveMethods(self,selectedCode,preferredCode) 
                 }
 
                 if (self.closest('.mukuru-calculator__send')) { 
-                    
-                    //Clear payin value if the country changes 
-                    // self.closest('.inputs-wrapper').querySelector('.currency_amount > input').value = '';
-                    self.closest('.mukuru-calculator').querySelector('.mukuru-calculator__receive .currency_amount > input').value = '';
+
+                    // Clear out values except the selected one 
+                    self.closest(".mukuru-calculator").querySelectorAll(".currency_amount input[type='number']").forEach(input => {
+                        if ( input !== document.querySelector('input[name="send-amount"]') ) {
+                            input.value = '';
+                        }
+                    });
 
                     //Disable Calculator Inputs
                     self.closest('.mukuru-calculator').style.pointerEvents = 'none';
@@ -286,15 +294,16 @@ store('calculator', {
                 self.closest('.mukuru-calculator__currency').classList.toggle('active');
         
                 // Trigger Calculate
-                setTimeout(() => {
-                    if (document.querySelector('.calculator-wrapper .mukuru-calculator input').value > 0) {
-                        document.querySelector('a[href="#calculate"]').click();
-                    }
-                }, 10);
+                if (document.querySelector('.calculator-wrapper .mukuru-calculator input').value > 0) {
+                    setTimeout(() => {
+                            document.querySelector('a[href="#calculate"]').click();
+                    }, 10);
+                }
             }
 
         },
         selectCurrency: () => {
+
             const context = getContext();
             const self = getElement(context).ref;
 
@@ -303,8 +312,10 @@ store('calculator', {
             setTimeout(() => {
                 self.closest('.inputs-wrapper').querySelector('.country_search input').focus();
             }, 100);
+
         },
         allowedKeys: (event) => {
+
             const context = getContext();
             const self = getElement(context).ref;
 
@@ -321,11 +332,24 @@ store('calculator', {
                 self.value = value.substring(1);
             }
 
+            
+
+            let shouldCalculate = false;
             self.closest(".mukuru-calculator").querySelectorAll(".currency_amount input[type='number']").forEach(input => {
-                if (input !== self) {
+                if (input !== self && Number(self.value) > 0) {
                     input.value = '';
                 }
+                if (Number(input.value) > 0) {
+                    shouldCalculate = true;
+                }
             });
+
+            if (shouldCalculate) {
+                clearTimeout(self.calculateTimeout);
+                self.calculateTimeout = setTimeout(() => {
+                    document.querySelector('a[href="#calculate"]').click();
+                }, 1000);
+            }
         } 
     }
 });
