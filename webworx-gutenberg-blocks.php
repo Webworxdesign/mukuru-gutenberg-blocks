@@ -80,46 +80,28 @@ add_action( 'enqueue_block_assets', 'slick_slider_scripts_styles' );
 
 function calculator_callback() {  
 	
-    //Get selected pay_in country
-    $pay_in_fields = [];
-
-	//Get all send options
-    $s_field = get_field_object('field_62d93d0df3955')['choices'];
-
-    //Get currency by comparing default lang to $s_field options
-    if(!empty($s_field)) {
-        foreach ($s_field as $key => $country) {
-            $exploded_key = explode(',',$key);
-            if( $exploded_key[0] === $default_country ) {
-                $pay_in_fields = [
-                    $default_country,
-                    $exploded_key[1]
-                ];
-            }
+    //Get Country List from api    
+    if( isset($_POST['selected_code']) && $_POST['payout_countries_ajax'] ) {
+        $payout_countries_get = json_decode(file_get_contents(__DIR__ . '/payout-countries.json'));
+        $receive_countries = $payout_countries_get->{$_POST['selected_code']}; 
+        $payoutData = array();
+        
+        //Collect data we want to return as ajax response
+        foreach($receive_countries->items as $key => $country) {
+            $payoutData[$country->name] = array(
+                "payInCountryCode" => $country->code, 
+                "payOutCurrencyCode" => $country->baseCurrencyCode, 
+                "payInCurrencyCode" => $pay_in_currency[0], 
+                "payOutCountryCode" => $country->code
+            );
         }
+       echo json_encode($payoutData);    
+    } else {
+        $payout_countries_get = json_decode(file_get_contents(__DIR__ . '/payout-countries.json'));
+        $receive_countries = $payout_countries_get->{$pay_in_currency[0]};    
+		
+		echo json_encode($receive_countries);
     }
-	
-	//Get the pay_in Country code
-    $pay_in_currency = $pay_in_fields;
-	
-	$currency = $pay_in_currency[1];
-    $currency2 = $pay_out_currency[1];
-    
-    //Create array of currency => Country Name
-    $sendCurrencies = array();
-    foreach ($s_field as $key => $s_choice) {   
-        $current_currency = explode(',', $key);
-        $sendCurrencies[strtoupper($current_currency[0])] = array(
-            $s_choice => $current_currency[1],
-            'id' => $current_currency[2],
-            'channel'=> $current_currency[3]
-        );
-    }
-
-	// merge $pay_in_currency and $sendCurrencies
-	$pay_in_currency = array_merge($pay_in_currency, $sendCurrencies);
-
-	echo json_encode($pay_in_currency);
 
 	wp_die();
 }

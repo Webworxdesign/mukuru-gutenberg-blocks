@@ -248,6 +248,11 @@
 						max-height: 250px;
 						z-index: 1000000;
 					}
+					&.hidden {
+						.currency_dropdown{
+							pointer-events: none;
+						}
+					}
 				}
 			}
 			.selected_currency{
