@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Mukuru Gutenberg Blocks
  * Description:       An interactive block with the Interactivity API
- * Version:           0.1.0
+ * Version:           0.1.4
  * Requires at least: 6.1
  * Requires PHP:      7.0
  * Author:            The WordPress Contributors
@@ -46,36 +46,3 @@ function auto_register_mukuru_block_types() {
 		};
 	};
 }
-
-
-
-/**
- * Add slick slider scripts and style.
- */
-function slick_slider_scripts_styles() {
-	if ( ! is_admin() ) {
-		wp_enqueue_script( 
-			'slick-slider-block-script', 
-			plugin_dir_url( __DIR__ ) . 'mukuru-gutenberg-blocks/vendor/slick/slick.min.js',
-			array(), 
-			null,
-			true
-		);
-		wp_enqueue_style( 
-			'slick-slider-block-style', 
-			plugin_dir_url( __DIR__ ) . 'mukuru-gutenberg-blocks/vendor/slick/slick.min.css' 
-		);
-		wp_enqueue_style( 
-			'slick-slider-block-theme-style', 
-			plugin_dir_url( __DIR__ ) . 'mukuru-gutenberg-blocks/vendor/slick/slick-theme.css' 
-		);
-		wp_enqueue_script( 
-			'slick-slider-block-init', 
-			plugin_dir_url( __DIR__ ) . 'mukuru-gutenberg-blocks/vendor/slick/init.js',
-			array(), 
-			null,
-			true
-		);
-	}
-}
-add_action( 'enqueue_block_assets', 'slick_slider_scripts_styles' );

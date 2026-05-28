@@ -21,7 +21,7 @@ const enableControlOnBlocks = [
 /**
  * Add spacer controls attribute to block.
  *
- * @param {object} settings Current block settings.
+ * @param {object} settings Current block settings. 
  * @param {string} name Name of block.
  *
  * @returns {object} Modified block settings.
