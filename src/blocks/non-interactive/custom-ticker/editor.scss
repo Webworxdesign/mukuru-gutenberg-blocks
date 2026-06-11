@@ -1,0 +1,25 @@
+/**
+ * The following styles get applied inside the editor only.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+.wp-block-wwx-custom-ticker {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+
+  > .block-editor-inner-blocks {
+    > .block-editor-block-list__layout {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      overflow-x: auto;
+    }
+
+    .block-list-appender.wp-block {
+      list-style: none;
+      padding: 0;
+      flex-shrink: 0;
+    }
+  }
+}

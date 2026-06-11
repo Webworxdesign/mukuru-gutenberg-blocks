@@ -1,34 +1,33 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "wwx/image-ticker",
+	"name": "wwx/custom-ticker",
 	"version": "0.1.0",
-	"title": "Image Ticker",
+	"title": "Custom Ticker",
 	"category": "widgets",
-	"icon": "images-alt",
-	"description": "An image ticker block",
+	"icon": "customs-alt",
+	"description": "An custom ticker block",
 	"attributes": {
 		"tickerSpeed": {
 			"type": "string",
-			"default": "10"
+			"default": "45"
 		},
 		"pauseOnHover": { 
 			"type": "boolean",
 			"default": true 
 		}, 
-		"fadedEdges": {
-			"type": "boolean",
-			"default": true 
+		"tickerSpacing": {
+			"type": "string",
+			"default": "40"
 		}
 	}, 
-	"textdomain": "image-ticker", 
+	"textdomain": "custom-ticker", 
 	"supports": {
-		"interactivity": true,
 		"align": ["full", "wide"]
 	},
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
 	"style": "file:./style-index.css",
 	"render": "file:./render.php",
-	"viewScriptModule": "file:./view.js"
+	"viewScript": "file:./view.js"
 }

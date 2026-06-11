@@ -1,0 +1,82 @@
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.wp-block-wwx-custom-ticker {
+	overflow: hidden;
+	opacity: 1;
+	transition: opacity 0.25s ease;
+	&.is-initializing {
+		opacity: 0;
+		.track {
+			animation-play-state: paused;
+		}
+	}
+	&.is-ready {
+		opacity: 1;
+		.track {
+			animation-play-state: running;
+		}
+	}
+	.ticker-track {
+		display: flex;
+		align-items: center;
+		overflow: hidden;
+		white-space: nowrap;
+		position: relative;
+		.track {
+			display: inline-flex;
+			align-items: center;
+			white-space: nowrap;
+			animation-name: custom-ticker;
+			animation-timing-function: linear;
+			animation-delay: 0s;
+			animation-iteration-count: infinite;
+			animation-direction: normal;
+			animation-fill-mode: none;
+			animation-play-state: running;
+			.track-set {
+				display: inline-flex;
+				align-items: center;
+				flex-shrink: 0;
+				p, span {
+					display: inline-block;
+					margin: 0;
+					padding: 0;
+				}
+				figure {
+					display: inline-block;
+					margin: 0;
+					padding: 0;
+					img {
+						max-width: unset;
+						height: auto;
+						display: block;
+						@media only screen and (max-width: 768px) {
+							height: 160px;
+							width: auto;
+						}
+					}
+				}
+			}
+			a { 
+				text-decoration: none; 
+			}
+		}
+	}
+}
+
+@keyframes custom-ticker {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(var(--ticker-distance, -50%));
+	}
+}
+
+
+
